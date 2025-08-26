@@ -1,147 +1,157 @@
 'use client';
 
-import { useRef, useEffect, useState } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { useRef, useEffect, useState, useCallback, useMemo } from 'react';
+import { motion } from 'framer-motion';
 import { Download, Github, Linkedin, Mail, ArrowDown, Sparkles, Zap, Target } from 'lucide-react';
-import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { OrbitControls, Sphere, MeshDistortMaterial, Float, Text3D, Center, Environment, Stars, Cloud, Sparkles as ThreeSparkles } from '@react-three/drei';
-import { EffectComposer, Bloom, ChromaticAberration, Vignette } from '@react-three/postprocessing';
-import { gsap } from 'gsap';
-import { useGSAP } from '@gsap/react';
+import dynamic from 'next/dynamic';
+
+// Dynamically import heavy 3D components
+const ThreeScene = dynamic(() => import('./ThreeScene'), {
+  ssr: false,
+  loading: () => <div className="w-full h-full bg-gradient-to-br from-cyan-900/20 to-purple-900/20" />
+});
 
 const Hero = () => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end start"]
-  });
-  
-  const y = useTransform(scrollYProgress, [0, 1], ['0%', '50%']);
-  const opacity = useTransform(scrollYProgress, [0, 1], [1, 0]);
+  const [isVisible, setIsVisible] = useState(false);
+  const [is3DLoaded, setIs3DLoaded] = useState(false);
 
-  const scrollToAbout = () => {
+  // Intersection Observer for performance
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          // Load 3D scene only when visible
+          setTimeout(() => setIs3DLoaded(true), 100);
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
+  const scrollToAbout = useCallback(() => {
     document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' });
-  };
+  }, []);
 
-  return (
-    <section ref={containerRef} className="min-h-screen flex items-center justify-center relative overflow-hidden bg-black">
-      {/* Futuristic Background Grid */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(120,119,198,0.3),rgba(255,255,255,0))]">
-        <div className="absolute inset-0 bg-[linear-gradient(90deg,transparent_0%,rgba(120,119,198,0.1)_50%,transparent_100%)] animate-pulse"></div>
-        <div className="absolute inset-0 bg-[linear-gradient(0deg,transparent_0%,rgba(120,119,198,0.1)_50%,transparent_100%)] animate-pulse" style={{animationDelay: '1s'}}></div>
-      </div>
-
-      {/* Animated Grid Lines */}
-      <div className="absolute inset-0">
-        {[...Array(20)].map((_, i) => (
+  // Memoize grid lines to prevent unnecessary re-renders
+  const gridLines = useMemo(() => {
+    if (!isVisible) return null;
+    
+    return (
+      <>
+        {[...Array(10)].map((_, i) => ( // Reduced from 20 to 10
           <motion.div
             key={i}
-            className="absolute h-px bg-gradient-to-r from-transparent via-indigo-500/30 to-transparent"
+            className="absolute h-px bg-gradient-to-r from-transparent via-indigo-500/20 to-transparent"
             style={{
-              top: `${i * 5}%`,
+              top: `${i * 10}%`,
               left: '0%',
               right: '0%',
             }}
+            initial={{ opacity: 0, scaleX: 0 }}
             animate={{
               opacity: [0, 1, 0],
               scaleX: [0, 1, 0],
             }}
             transition={{
-              duration: 3,
+              duration: 2, // Reduced from 3s
               repeat: Infinity,
-              delay: i * 0.1,
+              delay: i * 0.2, // Increased delay
             }}
           />
         ))}
-        {[...Array(20)].map((_, i) => (
+        {[...Array(10)].map((_, i) => ( // Reduced from 20 to 10
           <motion.div
             key={`v-${i}`}
-            className="absolute w-px bg-gradient-to-b from-transparent via-indigo-500/30 to-transparent"
+            className="absolute w-px bg-gradient-to-b from-transparent via-indigo-500/20 to-transparent"
             style={{
-              left: `${i * 5}%`,
+              left: `${i * 10}%`,
               top: '0%',
               bottom: '0%',
             }}
+            initial={{ opacity: 0, scaleY: 0 }}
             animate={{
               opacity: [0, 1, 0],
               scaleY: [0, 1, 0],
             }}
             transition={{
-              duration: 3,
+              duration: 2, // Reduced from 3s
               repeat: Infinity,
-              delay: i * 0.1 + 1.5,
+              delay: i * 0.2 + 1, // Increased delay
             }}
           />
         ))}
-      </div>
+      </>
+    );
+  }, [isVisible]);
 
-      {/* 3D Background Scene */}
-      <div className="absolute inset-0 z-0">
-        <Canvas camera={{ position: [0, 0, 8], fov: 75 }}>
-          <ambientLight intensity={0.1} />
-          <directionalLight position={[10, 10, 5]} intensity={0.5} />
-          <pointLight position={[-10, -10, -10]} intensity={0.3} color="#8b5cf6" />
-          
-          {/* Floating Geometric Shapes */}
-          <Float speed={2} rotationIntensity={0.5} floatIntensity={0.5}>
-            <mesh position={[-3, 2, 0]}>
-              <octahedronGeometry args={[0.5, 0]} />
-              <meshStandardMaterial color="#6366f1" wireframe />
-            </mesh>
-          </Float>
-          
-          <Float speed={1.5} rotationIntensity={0.3} floatIntensity={0.3}>
-            <mesh position={[3, -2, 0]}>
-              <icosahedronGeometry args={[0.4, 0]} />
-              <meshStandardMaterial color="#8b5cf6" wireframe />
-            </mesh>
-          </Float>
-
-          {/* Central Holographic Sphere */}
-          <Float speed={1} rotationIntensity={0.2} floatIntensity={0.2}>
-            <Sphere args={[1, 32, 32]} position={[0, 0, 0]}>
-              <MeshDistortMaterial
-                color="#06b6d4"
-                attach="material"
-                distort={0.4}
-                speed={2}
-                roughness={0}
-                metalness={0.8}
-                transparent
-                opacity={0.6}
-              />
-            </Sphere>
-          </Float>
-
-          {/* Orbiting Particles */}
-          <ThreeSparkles
-            count={100}
-            scale={10}
-            size={2}
-            speed={0.3}
-            color="#6366f1"
+  // Memoize floating elements
+  const floatingElements = useMemo(() => {
+    if (!isVisible) return null;
+    
+    return (
+      <>
+        {[...Array(4)].map((_, i) => ( // Reduced from 8 to 4
+          <motion.div
+            key={i}
+            className="absolute w-1 h-1 bg-cyan-400 rounded-full"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+            }}
+            initial={{ opacity: 0, y: 0, scale: 1 }}
+            animate={{
+              y: [0, -20, 0], // Reduced movement
+              opacity: [0.3, 1, 0.3],
+              scale: [1, 1.2, 1], // Reduced scale
+            }}
+            transition={{
+              duration: 3 + Math.random() * 2, // Reduced duration
+              repeat: Infinity,
+              delay: Math.random() * 1, // Reduced delay
+            }}
           />
+        ))}
+      </>
+    );
+  }, [isVisible]);
 
-          {/* Environment and Effects */}
-          <Environment preset="city" />
-          <EffectComposer>
-            <Bloom luminanceThreshold={0.1} intensity={0.5} />
-            <ChromaticAberration offset={[0.002, 0.002]} />
-            <Vignette darkness={0.3} />
-          </EffectComposer>
-          
-          <OrbitControls enableZoom={false} autoRotate autoRotateSpeed={0.5} />
-        </Canvas>
+  return (
+    <section ref={containerRef} className="min-h-screen flex items-center justify-center relative overflow-hidden bg-black">
+      {/* Simplified Background */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(120,119,198,0.2),rgba(255,255,255,0))]">
+        <div className="absolute inset-0 bg-[linear-gradient(90deg,transparent_0%,rgba(120,119,198,0.05)_50%,transparent_100%)] animate-pulse"></div>
       </div>
+
+      {/* Optimized Grid Lines */}
+      {gridLines}
+
+      {/* 3D Background Scene - Only when visible and loaded */}
+      {isVisible && (
+        <div className="absolute inset-0 z-0">
+          {is3DLoaded ? (
+            <ThreeScene />
+          ) : (
+            <div className="w-full h-full bg-gradient-to-br from-cyan-900/20 to-purple-900/20" />
+          )}
+        </div>
+      )}
 
       {/* Content */}
       <div className="container-custom relative z-10">
         <div className="text-center max-w-5xl mx-auto">
-          {/* Futuristic Greeting */}
+          {/* Optimized Greeting */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
+            animate={{ opacity: isVisible ? 1 : 0, y: isVisible ? 0 : 20 }}
+            transition={{ duration: 0.6 }} // Reduced from 0.8s
             className="mb-6"
           >
             <div className="flex items-center justify-center gap-3 mb-4">
@@ -156,11 +166,11 @@ const Hero = () => {
             </span>
           </motion.div>
 
-          {/* Main Title with Futuristic Effects */}
+          {/* Optimized Main Title */}
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.1 }}
+            animate={{ opacity: isVisible ? 1 : 0, y: isVisible ? 0 : 20 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
             className="text-5xl md:text-7xl lg:text-8xl font-black text-white mb-8 relative"
           >
             <span className="relative">
@@ -169,7 +179,7 @@ const Hero = () => {
               </span>
               <motion.div
                 className="absolute -inset-1 bg-gradient-to-r from-cyan-400 via-indigo-500 to-purple-600 rounded-lg blur opacity-25"
-                animate={{ opacity: [0.25, 0.5, 0.25] }}
+                animate={{ opacity: isVisible ? [0.25, 0.5, 0.25] : 0.25 }}
                 transition={{ duration: 2, repeat: Infinity }}
               />
             </span>
@@ -180,17 +190,17 @@ const Hero = () => {
               </span>
               <motion.div
                 className="absolute -inset-1 bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 rounded-lg blur opacity-25"
-                animate={{ opacity: [0.25, 0.5, 0.25] }}
+                animate={{ opacity: isVisible ? [0.25, 0.5, 0.25] : 0.25 }}
                 transition={{ duration: 2, repeat: Infinity, delay: 1 }}
               />
             </span>
           </motion.h1>
 
-          {/* Futuristic Description */}
+          {/* Optimized Description */}
           <motion.p
             initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
+            animate={{ opacity: isVisible ? 1 : 0, y: isVisible ? 0 : 20 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
             className="text-lg md:text-xl text-gray-300 mb-10 max-w-3xl mx-auto leading-relaxed font-light"
           >
             <span className="text-cyan-400 font-medium">Crafting</span> exceptional digital experiences with{' '}
@@ -201,15 +211,15 @@ const Hero = () => {
             in building <span className="text-cyan-400 font-medium">scalable web applications</span>.
           </motion.p>
 
-          {/* Futuristic CTA Buttons */}
+          {/* Optimized CTA Buttons */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
+            animate={{ opacity: isVisible ? 1 : 0, y: isVisible ? 0 : 20 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
             className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-12"
           >
             <motion.button
-              whileHover={{ scale: 1.05, y: -5 }}
+              whileHover={{ scale: 1.05, y: -3 }} // Reduced movement
               whileTap={{ scale: 0.95 }}
               className="group relative px-8 py-4 bg-gradient-to-r from-cyan-500 via-indigo-500 to-purple-600 text-white font-bold rounded-2xl shadow-2xl hover:shadow-cyan-500/25 transition-all duration-300 overflow-hidden"
             >
@@ -222,7 +232,7 @@ const Hero = () => {
             </motion.button>
             
             <motion.button
-              whileHover={{ scale: 1.05, y: -5 }}
+              whileHover={{ scale: 1.05, y: -3 }} // Reduced movement
               whileTap={{ scale: 0.95 }}
               onClick={scrollToAbout}
               className="group relative px-8 py-4 border-2 border-cyan-500 text-cyan-400 font-bold rounded-2xl hover:bg-cyan-500 hover:text-black transition-all duration-300 overflow-hidden"
@@ -235,11 +245,11 @@ const Hero = () => {
             </motion.button>
           </motion.div>
 
-          {/* Futuristic Social Links */}
+          {/* Optimized Social Links */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
+            animate={{ opacity: isVisible ? 1 : 0, y: isVisible ? 0 : 20 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
             className="flex justify-center items-center gap-6 mb-12"
           >
             {[
@@ -250,7 +260,7 @@ const Hero = () => {
               <motion.a
                 key={social.label}
                 href={social.href}
-                whileHover={{ scale: 1.2, y: -10, rotate: 360 }}
+                whileHover={{ scale: 1.1, y: -5, rotate: 360 }} // Reduced movement
                 whileTap={{ scale: 0.9 }}
                 className={`p-4 bg-gradient-to-br ${social.color} rounded-2xl shadow-2xl hover:shadow-lg transition-all duration-300 text-white backdrop-blur-sm border border-white/20`}
                 aria-label={social.label}
@@ -260,16 +270,16 @@ const Hero = () => {
             ))}
           </motion.div>
 
-          {/* Futuristic Scroll Indicator */}
+          {/* Optimized Scroll Indicator */}
           <motion.div
             initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.5 }}
+            animate={{ opacity: isVisible ? 1 : 0 }}
+            transition={{ duration: 0.6, delay: 0.5 }}
             className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
           >
             <motion.button
               onClick={scrollToAbout}
-              animate={{ y: [0, 15, 0] }}
+              animate={{ y: isVisible ? [0, 10, 0] : 0 }} // Reduced movement
               transition={{ duration: 2, repeat: Infinity }}
               className="group p-4 rounded-full bg-gradient-to-r from-cyan-500/20 to-purple-500/20 backdrop-blur-md hover:from-cyan-500/40 hover:to-purple-500/40 transition-all duration-300 border border-cyan-400/30"
             >
@@ -279,35 +289,16 @@ const Hero = () => {
         </div>
       </div>
 
-      {/* Floating Holographic Elements */}
-      <div className="absolute inset-0 pointer-events-none">
-        {[...Array(8)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute w-1 h-1 bg-cyan-400 rounded-full"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-            }}
-            animate={{
-              y: [0, -30, 0],
-              opacity: [0.3, 1, 0.3],
-              scale: [1, 1.5, 1],
-            }}
-            transition={{
-              duration: 4 + Math.random() * 3,
-              repeat: Infinity,
-              delay: Math.random() * 2,
-            }}
-          />
-        ))}
-      </div>
+      {/* Optimized Floating Elements */}
+      {floatingElements}
 
-      {/* Energy Field Effect */}
-      <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-gradient-radial from-cyan-500/10 via-transparent to-transparent animate-pulse" />
-        <div className="absolute inset-0 bg-gradient-radial from-purple-500/10 via-transparent to-transparent animate-pulse" style={{animationDelay: '1s'}} />
-      </div>
+      {/* Simplified Energy Field Effect */}
+      {isVisible && (
+        <div className="absolute inset-0">
+          <div className="absolute inset-0 bg-gradient-radial from-cyan-500/5 via-transparent to-transparent animate-pulse" />
+          <div className="absolute inset-0 bg-gradient-radial from-purple-500/5 via-transparent to-transparent animate-pulse" style={{animationDelay: '1s'}} />
+        </div>
+      )}
     </section>
   );
 };
