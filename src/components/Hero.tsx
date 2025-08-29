@@ -86,7 +86,7 @@ const Hero = () => {
     // Create a temporary link element for download
     const link = document.createElement('a');
     link.href = directDownloadUrl;
-    link.download = 'Frontend_Developer_CV.pdf';
+    link.download = 'Frontend_Developer_CV_Mohammad_Apon.pdf';
     link.target = '_blank';
     
     // Add click event to trigger download
@@ -216,15 +216,18 @@ const Hero = () => {
 
       {/* Content */}
       <div className="container-custom relative z-10">
+        {/* Mobile-specific top padding to prevent jumping */}
+        <div className="pt-20 md:pt-24 lg:pt-28"></div>
+        
         <div className="text-center max-w-5xl mx-auto">
           {/* Optimized Greeting */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: isVisible ? 1 : 0, y: isVisible ? 0 : 20 }}
-            transition={{ duration: 0.5 }}
-            className="mb-6"
+            transition={{ duration: 0.3 }}
+            className="mb-6 md:mb-8"
           >
-            <div className="flex items-center justify-center gap-3 mb-4">
+            <div className="flex items-center justify-center gap-3 mb-2 md:mb-6">
               <Sparkles className="text-cyan-400 animate-pulse" size={24} />
               <span className="text-lg md:text-xl text-cyan-400 font-medium tracking-wider">
                 FUTURE IS NOW
@@ -241,7 +244,7 @@ const Hero = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: isVisible ? 1 : 0, y: isVisible ? 0 : 20 }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="text-5xl md:text-7xl lg:text-8xl font-black text-white mb-8 relative"
+            className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black text-white mb-6 md:mb-8 lg:mb-10 relative"
           >
             <span className="relative">
               <span className="gradient-text bg-gradient-to-r from-cyan-400 via-indigo-500 to-purple-600 bg-clip-text text-transparent">
@@ -271,7 +274,7 @@ const Hero = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: isVisible ? 1 : 0, y: isVisible ? 0 : 20 }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="text-lg md:text-xl text-gray-300 mb-10 max-w-3xl mx-auto leading-relaxed font-light"
+            className="text-base sm:text-lg md:text-xl text-gray-300 mb-8 md:mb-10 max-w-3xl mx-auto leading-relaxed font-light px-4 sm:px-0"
           >
             <span className="text-cyan-400 font-medium">Crafting</span> exceptional digital experiences with{' '}
             <span className="text-indigo-400 font-medium">cutting-edge technologies</span>. 
@@ -286,7 +289,7 @@ const Hero = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: isVisible ? 1 : 0, y: isVisible ? 0 : 20 }}
             transition={{ duration: 0.5, delay: 0.3 }}
-            className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-12"
+            className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center items-center mb-8 md:mb-12 px-4 sm:px-0"
           >
             <motion.button
               whileHover={{ scale: 1.03, y: -2 }}
@@ -298,7 +301,7 @@ const Hero = () => {
               <div className="relative flex items-center gap-3">
                 <Download size={20} className="animate-bounce" />
                 <span>DOWNLOAD CV</span>
-                <Zap size={20} className="text-white" />
+                <Zap size={20} className="text-yellow-300" />
               </div>
             </motion.button>
             
@@ -321,16 +324,18 @@ const Hero = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: isVisible ? 1 : 0, y: isVisible ? 0 : 20 }}
             transition={{ duration: 0.5, delay: 0.4 }}
-            className="flex justify-center items-center gap-6 mb-12"
+            className="flex justify-center items-center gap-4 sm:gap-6 mb-8 md:mb-12 px-4 sm:px-0"
           >
             {[
-              { icon: Github, href: '#', label: 'GitHub', color: 'from-gray-600 to-gray-800' },
-              { icon: Linkedin, href: '#', label: 'LinkedIn', color: 'from-blue-600 to-blue-800' },
-              { icon: Mail, href: '#', label: 'Email', color: 'from-red-500 to-red-700' },
+              { icon: Github, href: 'https://github.com/mohammadapon11', label: 'GitHub', color: 'from-gray-600 to-gray-800' },
+              { icon: Linkedin, href: 'https://www.linkedin.com/in/mohammadapon11/', label: 'LinkedIn', color: 'from-blue-600 to-blue-800' },
+              { icon: Mail, href: 'mailto:mohammadapon11@gmail.com', label: 'Email', color: 'from-red-500 to-red-700' },
             ].map((social) => (
               <motion.a
                 key={social.label}
                 href={social.href}
+                target="_blank"
+                rel="noopener noreferrer"
                 whileHover={{ scale: 1.08, y: -3, rotate: 360 }}
                 whileTap={{ scale: 0.92 }}
                 className={`p-4 bg-gradient-to-br ${social.color} rounded-2xl shadow-2xl hover:shadow-lg transition-all duration-300 text-white backdrop-blur-sm border border-white/20`}
@@ -346,7 +351,7 @@ const Hero = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: isVisible ? 1 : 0 }}
             transition={{ duration: 0.5, delay: 0.5 }}
-            className="absolute -bottom-16 left-1/2 transform -translate-x-1/2"
+            className="absolute -bottom-12 sm:-bottom-16 left-1/2 transform -translate-x-1/2 md:block hidden"
           >
             <motion.button
               onClick={scrollToAbout}

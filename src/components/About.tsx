@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { Code, Globe, Smartphone, Database, Zap, Shield, Rocket, Brain, Cpu, Atom } from 'lucide-react';
+import { useCallback } from 'react';
 
 const About = () => {
   const features = [
@@ -43,6 +44,13 @@ const About = () => {
     }
   ];
 
+  const scrollToAbout = useCallback(() => {
+    document.getElementById('contact')?.scrollIntoView({ 
+      behavior: 'smooth',
+      block: 'start'
+    });
+  }, []);
+
   return (
     <section className="section-padding bg-black relative overflow-hidden">
       {/* Futuristic Background */}
@@ -77,9 +85,9 @@ const About = () => {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: 0.3 }}
           viewport={{ once: true }}
-          className="text-center mb-20"
+          className="text-center md:mb-20 mb-12"
         >
           <div className="flex items-center justify-center gap-3 mb-6">
             <Rocket className="text-cyan-400 animate-pulse" size={32} />
@@ -132,7 +140,7 @@ const About = () => {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: 0.3 }}
           viewport={{ once: true }}
           className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-20"
         >
@@ -167,7 +175,7 @@ const About = () => {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: 0.3 }}
           viewport={{ once: true }}
           className="relative p-12 bg-gradient-to-r from-cyan-900/20 to-purple-900/20 rounded-3xl border border-cyan-500/30 backdrop-blur-xl overflow-hidden"
         >
@@ -188,6 +196,7 @@ const About = () => {
               Let&apos;s discuss how we can bring your ideas to life with <span className="text-cyan-400 font-medium">cutting-edge technology</span>.
             </p>
             <motion.button
+              onClick={scrollToAbout}
               whileHover={{ scale: 1.05, y: -5 }}
               whileTap={{ scale: 0.95 }}
               className="group relative px-10 py-4 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 text-white font-bold rounded-2xl shadow-2xl hover:shadow-cyan-500/25 transition-all duration-300 overflow-hidden"

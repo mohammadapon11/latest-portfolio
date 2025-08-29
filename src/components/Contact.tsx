@@ -9,8 +9,6 @@ import {
   Send, 
   Github, 
   Linkedin, 
-  Twitter, 
-  Globe,
   Rocket,
   Brain,
   Cpu,
@@ -37,12 +35,35 @@ const Contact = () => {
     e.preventDefault();
     setIsSubmitting(true);
     
-    // Simulate form submission
-    setTimeout(() => {
+    try {
+      // Create mailto link with form data
+      const mailtoLink = `mailto:mohammadapon11@gmail.com?subject=${encodeURIComponent(formData.subject)}&body=${encodeURIComponent(`Name: ${formData.name}\nEmail: ${formData.email}\n\nMessage:\n${formData.message}`)}`;
+      
+      // Open default email client
+      window.open(mailtoLink, '_blank');
+      
+      // Simulate success
+      setTimeout(() => {
+        setIsSubmitting(false);
+        setSubmitStatus('success');
+        
+        // Reset form after successful submission
+        setFormData({
+          name: '',
+          email: '',
+          subject: '',
+          message: ''
+        });
+        
+        // Reset status after 3 seconds
+        setTimeout(() => setSubmitStatus('idle'), 3000);
+      }, 1000);
+      
+    } catch {
       setIsSubmitting(false);
-      setSubmitStatus('success');
+      setSubmitStatus('error');
       setTimeout(() => setSubmitStatus('idle'), 3000);
-    }, 2000);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -86,9 +107,9 @@ const Contact = () => {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: 0.3 }}
           viewport={{ once: true }}
-          className="text-center mb-20"
+          className="text-center md:mb-20 mb-12"
         >
           <div className="flex items-center justify-center gap-3 mb-6">
             <Rocket className="text-pink-400 animate-pulse" size={32} />
@@ -108,7 +129,7 @@ const Contact = () => {
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
+            transition={{ duration: 0.3 }}
             viewport={{ once: true }}
             className="relative"
           >
@@ -122,63 +143,143 @@ const Contact = () => {
             
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="group">
+                <div className="group relative">
+                  <motion.div
+                    className="absolute inset-0 bg-gradient-to-r from-pink-500/20 to-purple-500/20 rounded-2xl blur-xl opacity-0 group-focus-within:opacity-100 transition-all duration-500"
+                    animate={{
+                      scale: [1, 1.02, 1],
+                    }}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      ease: "easeInOut"
+                    }}
+                  />
                   <label className="block text-sm font-medium text-gray-300 mb-3 group-focus-within:text-pink-400 transition-colors duration-300">
                     Name
                   </label>
-                  <input
-                    type="text"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    required
-                    className="w-full px-6 py-4 bg-gradient-to-br from-slate-900/50 to-slate-800/50 border border-slate-700/50 rounded-2xl text-white placeholder-gray-400 focus:border-pink-500/50 focus:outline-none focus:ring-2 focus:ring-pink-500/20 transition-all duration-300 backdrop-blur-xl"
-                    placeholder="Your Name"
+                  <div className="relative">
+                    <div className="absolute inset-0 bg-gradient-to-br from-pink-500/10 to-purple-500/10 rounded-2xl blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                    <input
+                      type="text"
+                      name="name"
+                      value={formData.name}
+                      onChange={handleChange}
+                      required
+                      className="relative w-full px-6 py-4 bg-black/40 border border-slate-700/30 rounded-2xl text-white placeholder-gray-400 focus:border-pink-500/60 focus:outline-none focus:ring-2 focus:ring-pink-500/20 transition-all duration-500 backdrop-blur-sm group-hover:border-pink-500/40 group-hover:bg-black/50 group-hover:shadow-lg group-hover:shadow-pink-500/10"
+                      placeholder="Your Name"
+                    />
+                  </div>
+                  <motion.div
+                    className="absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-pink-500 to-purple-500 rounded-full"
+                    initial={{ width: 0 }}
+                    whileInView={{ width: formData.name ? '100%' : 0 }}
+                    transition={{ duration: 0.5 }}
                   />
                 </div>
-                <div className="group">
-                  <label className="block text-sm font-medium text-gray-300 mb-3 group-focus-within:text-pink-400 transition-colors duration-300">
+                <div className="group relative">
+                  <motion.div
+                    className="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-indigo-500/20 rounded-2xl blur-xl opacity-0 group-focus-within:opacity-100 transition-all duration-500"
+                    animate={{
+                      scale: [1, 1.02, 1],
+                    }}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      ease: "easeInOut"
+                    }}
+                  />
+                  <label className="block text-sm font-medium text-gray-300 mb-3 group-focus-within:text-purple-400 transition-colors duration-300">
                     Email
                   </label>
-                  <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                    className="w-full px-6 py-4 bg-gradient-to-br from-slate-900/50 to-slate-800/50 border border-slate-700/50 rounded-2xl text-white placeholder-gray-400 focus:border-pink-500/50 focus:outline-none focus:ring-2 focus:ring-pink-500/20 transition-all duration-300 backdrop-blur-xl"
-                    placeholder="your@email.com"
+                  <div className="relative">
+                    <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-indigo-500/10 rounded-2xl blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                    <input
+                      type="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      required
+                      className="relative w-full px-6 py-4 bg-black/40 border border-slate-700/30 rounded-2xl text-white placeholder-gray-400 focus:border-purple-500/60 focus:outline-none focus:ring-2 focus:ring-purple-500/20 transition-all duration-500 backdrop-blur-sm group-hover:border-purple-500/40 group-hover:bg-black/50 group-hover:shadow-lg group-hover:shadow-purple-500/10"
+                      placeholder="your@email.com"
+                    />
+                  </div>
+                  <motion.div
+                    className="absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full"
+                    initial={{ width: 0 }}
+                    whileInView={{ width: formData.email ? '100%' : 0 }}
+                    transition={{ duration: 0.5 }}
                   />
                 </div>
               </div>
               
-              <div className="group">
-                <label className="block text-sm font-medium text-gray-300 mb-3 group-focus-within:text-pink-400 transition-colors duration-300">
+              <div className="group relative">
+                <motion.div
+                  className="absolute inset-0 bg-gradient-to-r from-indigo-500/20 to-blue-500/20 rounded-2xl blur-xl opacity-0 group-focus-within:opacity-100 transition-all duration-500"
+                  animate={{
+                    scale: [1, 1.02, 1],
+                  }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
+                />
+                <label className="block text-sm font-medium text-gray-300 mb-3 group-focus-within:text-indigo-400 transition-colors duration-300">
                   Subject
                 </label>
-                <input
-                  type="text"
-                  name="subject"
-                  value={formData.subject}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-6 py-4 bg-gradient-to-br from-slate-900/50 to-slate-800/50 border border-slate-700/50 rounded-2xl text-white placeholder-gray-400 focus:border-pink-500/50 focus:outline-none focus:ring-2 focus:ring-pink-500/20 transition-all duration-300 backdrop-blur-xl"
-                  placeholder="Project Discussion"
+                <div className="relative">
+                  <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 to-blue-500/10 rounded-2xl blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  <input
+                    type="text"
+                    name="subject"
+                    value={formData.subject}
+                    onChange={handleChange}
+                    required
+                    className="relative w-full px-6 py-4 bg-black/40 border border-slate-700/30 rounded-2xl text-white placeholder-gray-400 focus:border-indigo-500/60 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all duration-500 backdrop-blur-sm group-hover:border-indigo-500/40 group-hover:bg-black/50 group-hover:shadow-lg group-hover:shadow-indigo-500/10"
+                    placeholder="Project Discussion"
+                  />
+                </div>
+                <motion.div
+                  className="absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-indigo-500 to-blue-500 rounded-full"
+                  initial={{ width: 0 }}
+                  whileInView={{ width: formData.subject ? '100%' : 0 }}
+                  transition={{ duration: 0.5 }}
                 />
               </div>
               
-              <div className="group">
-                <label className="block text-sm font-medium text-gray-300 mb-3 group-focus-within:text-pink-400 transition-colors duration-300">
+              <div className="group relative">
+                <motion.div
+                  className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-cyan-500/20 rounded-2xl blur-xl opacity-0 group-focus-within:opacity-100 transition-all duration-500"
+                  animate={{
+                    scale: [1, 1.02, 1],
+                  }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
+                />
+                <label className="block text-sm font-medium text-gray-300 mb-3 group-focus-within:text-blue-400 transition-colors duration-300">
                   Message
                 </label>
-                <textarea
-                  name="message"
-                  value={formData.message}
-                  onChange={handleChange}
-                  required
-                  rows={6}
-                  className="w-full px-6 py-4 bg-gradient-to-br from-slate-900/50 to-slate-800/50 border border-slate-700/50 rounded-2xl text-white placeholder-gray-400 focus:border-pink-500/50 focus:outline-none focus:ring-2 focus:ring-pink-500/20 transition-all duration-300 backdrop-blur-xl resize-none"
-                  placeholder="Tell me about your project..."
+                <div className="relative">
+                  <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-cyan-500/10 rounded-2xl blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  <textarea
+                    name="message"
+                    value={formData.message}
+                    onChange={handleChange}
+                    required
+                    rows={6}
+                    className="relative w-full px-6 py-4 bg-black/40 border border-slate-700/30 rounded-2xl text-white placeholder-gray-400 focus:border-blue-500/60 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all duration-500 backdrop-blur-sm group-hover:border-blue-500/40 group-hover:bg-black/50 group-hover:shadow-lg group-hover:shadow-blue-500/10 resize-none"
+                    placeholder="Tell me about your project..."
+                  />
+                </div>
+                <motion.div
+                  className="absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full"
+                  initial={{ width: 0 }}
+                  whileInView={{ width: formData.message ? '100%' : 0 }}
+                  transition={{ duration: 0.5 }}
                 />
               </div>
               
@@ -216,7 +317,7 @@ const Contact = () => {
                     className="flex items-center gap-3 p-4 bg-gradient-to-r from-green-500/20 to-emerald-500/20 border border-green-500/30 rounded-2xl text-green-400 backdrop-blur-xl"
                   >
                     <CheckCircle size={20} />
-                    <span className="font-medium">Message sent successfully!</span>
+                    <span className="font-medium">Message sent successfully! Check your email client.</span>
                   </motion.div>
                 )}
                 {submitStatus === 'error' && (
@@ -238,7 +339,7 @@ const Contact = () => {
           <motion.div
             initial={{ opacity: 0, x: 50 }}
             whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
+            transition={{ duration: 0.3 }}
             viewport={{ once: true }}
             className="space-y-8"
           >
@@ -256,15 +357,15 @@ const Contact = () => {
                 {
                   icon: Mail,
                   title: 'Email',
-                  value: 'hello@yourportfolio.com',
-                  href: 'mailto:hello@yourportfolio.com',
+                  value: 'mohammadapon11@gmail.com',
+                  href: 'mailto:mohammadapon11@gmail.com',
                   color: 'from-pink-500 to-purple-500'
                 },
                 {
                   icon: Phone,
                   title: 'Phone',
-                  value: '+1 (555) 123-4567',
-                  href: 'tel:+15551234567',
+                  value: '+8801335-486776',
+                  href: 'tel:+8801335486776',
                   color: 'from-purple-500 to-indigo-500'
                 },
                 {
@@ -307,14 +408,14 @@ const Contact = () => {
               </h4>
               <div className="flex justify-center gap-6">
                 {[
-                  { icon: Github, href: '#', label: 'GitHub', color: 'from-gray-600 to-gray-800' },
-                  { icon: Linkedin, href: '#', label: 'LinkedIn', color: 'from-blue-600 to-blue-800' },
-                  { icon: Twitter, href: '#', label: 'Twitter', color: 'from-sky-500 to-blue-600' },
-                  { icon: Globe, href: '#', label: 'Website', color: 'from-purple-500 to-pink-500' }
+                  { icon: Github, href: 'https://github.com/mohammadapon11', label: 'GitHub', color: 'from-gray-600 to-gray-800' },
+                  { icon: Linkedin, href: 'https://www.linkedin.com/in/mohammadapon11/', label: 'LinkedIn', color: 'from-blue-600 to-blue-800' }
                 ].map((social, index) => (
                   <motion.a
                     key={social.label}
                     href={social.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     initial={{ opacity: 0, scale: 0.8 }}
                     whileInView={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.8, delay: index * 0.1 }}
@@ -336,7 +437,7 @@ const Contact = () => {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: 0.3 }}
           viewport={{ once: true }}
           className="relative p-12 bg-gradient-to-r from-pink-900/20 to-purple-900/20 rounded-3xl border border-pink-500/30 backdrop-blur-xl overflow-hidden"
         >

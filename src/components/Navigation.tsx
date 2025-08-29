@@ -10,34 +10,70 @@ const Navigation = () => {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
+    
     const handleScroll = () => {
       const scrollTop = window.scrollY;
       setScrolled(scrollTop > 50);
 
-      // Update active section based on scroll position
-      const sections = ['home', 'about', 'skills', 'experience', 'projects', 'contact'];
-      const currentSection = sections.find(section => {
-        const element = document.getElementById(section);
-        if (element) {
-          const rect = element.getBoundingClientRect();
-          return rect.top <= 100 && rect.bottom >= 100;
-        }
-        return false;
-      });
+      // Clear previous timeout
+      clearTimeout(timeoutId);
       
-      if (currentSection) {
-        setActiveSection(currentSection);
-      }
+      // Debounce the section detection for better performance
+      timeoutId = setTimeout(() => {
+        // Update active section based on scroll position
+        const sections = ['home', 'about', 'skills', 'experience', 'projects', 'contact'];
+        const isMobile = window.innerWidth < 1024;
+        const threshold = isMobile ? 150 : 100; // Larger threshold for mobile
+        
+        const currentSection = sections.find(section => {
+          const element = document.getElementById(section);
+          if (element) {
+            const rect = element.getBoundingClientRect();
+            return rect.top <= threshold && rect.bottom >= threshold;
+          }
+          return false;
+        });
+        
+        if (currentSection) {
+          setActiveSection(currentSection);
+        }
+      }, 50); // 50ms debounce
     };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      clearTimeout(timeoutId);
+    };
   }, []);
 
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
     if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+      // Get the current scroll position
+      const currentScrollY = window.scrollY;
+      
+      // Get the element's position relative to the viewport
+      const elementRect = element.getBoundingClientRect();
+      const elementTop = elementRect.top + currentScrollY;
+      
+      // Calculate the target scroll position with offset for mobile
+      const isMobile = window.innerWidth < 1024; // lg breakpoint
+      const offset = isMobile ? 100 : 80; // Smaller offset for mobile
+      const targetScrollY = elementTop - offset;
+      
+      // Add small delay for mobile to ensure smooth navigation
+      const scrollDelay = isMobile ? 100 : 0;
+      
+      setTimeout(() => {
+        // Smooth scroll to the target position
+        window.scrollTo({
+          top: targetScrollY,
+          behavior: 'smooth'
+        });
+      }, scrollDelay);
+      
       setActiveSection(sectionId);
       setIsOpen(false);
     }
@@ -58,7 +94,7 @@ const Navigation = () => {
       <motion.nav
         initial={{ y: -100 }}
         animate={{ y: 0 }}
-        transition={{ duration: 0.8 }}
+        transition={{ duration: 0.3 }}
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
           scrolled 
             ? 'bg-black/80 backdrop-blur-xl border-b border-cyan-500/30 shadow-2xl shadow-cyan-500/20' 

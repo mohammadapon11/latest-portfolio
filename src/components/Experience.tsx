@@ -102,9 +102,9 @@ const Experience = () => {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: 0.3 }}
           viewport={{ once: true }}
-          className="text-center mb-20"
+          className="text-center md:mb-20 mb-12"
         >
           <div className="flex items-center justify-center gap-3 mb-6">
             <Rocket className="text-orange-400 animate-pulse" size={32} />
@@ -276,7 +276,7 @@ const Experience = () => {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: 0.3 }}
           viewport={{ once: true }}
           className="relative p-12 bg-gradient-to-r from-orange-900/20 to-red-900/20 rounded-3xl border border-orange-500/30 backdrop-blur-xl overflow-hidden"
         >
