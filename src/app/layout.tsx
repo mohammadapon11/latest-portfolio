@@ -8,6 +8,14 @@ export const metadata: Metadata = {
   authors: [{ name: 'Frontend Developer' }],
   creator: 'Frontend Developer',
   publisher: 'Frontend Developer',
+  icons: {
+    icon: [
+      { url: '/logo.ico', sizes: 'any' },
+      { url: '/logo.png', type: 'image/png', sizes: '32x32' }
+    ],
+    apple: '/logo.png',
+    shortcut: '/logo.ico'
+  },
   formatDetection: {
     email: false,
     address: false,
@@ -63,6 +71,13 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <head>
+        {/* Favicon Configuration */}
+        <link rel="icon" href="/logo.ico" sizes="any" />
+        <link rel="icon" href="/logo.png" type="image/png" sizes="32x32" />
+        <link rel="apple-touch-icon" href="/logo.png" />
+        <link rel="shortcut icon" href="/logo.ico" />
+        <link rel="manifest" href="/manifest.json" />
+        
         {/* Preload critical resources */}
         <link
           rel="preload"
