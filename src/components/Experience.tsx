@@ -9,7 +9,7 @@ const Experience = () => {
       company: 'StoreX E-commerce Automation',
       position: 'Frontend Developer',
       duration: 'July 2024 - Present',
-      location: 'Remote',
+      location: 'Dhaka, Bangladesh',
       type: 'Full-time',
       achievements: [
         'Leading frontend development for e-commerce automation platform',
@@ -18,14 +18,14 @@ const Experience = () => {
         'Collaborating with cross-functional teams on product development',
         'Mentoring junior developers and conducting code reviews'
       ],
-      technologies: ['React', 'TypeScript', 'Next.js', 'Tailwind CSS', 'Redux', 'GraphQL'],
+      technologies: ['React', 'TypeScript', 'Next.js', 'Tailwind CSS', 'Redux', 'NodeJS', 'ExpressJS', 'MongoDB'],
       logo: '🛍️',
       color: 'from-cyan-500 to-blue-500'
     },
     {
       company: 'Solutya Pvt. Ltd.',
       position: 'Frontend Developer',
-      duration: 'January 2023 - June 2024',
+      duration: 'July 2023 - June 2024',
       location: 'Dhaka, Bangladesh',
       type: 'Full-time',
       achievements: [

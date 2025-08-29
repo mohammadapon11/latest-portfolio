@@ -1,14 +1,19 @@
-// Service Worker for Portfolio 3D - Performance Optimization
+// Service Worker for Portfolio 3D
 const CACHE_NAME = 'portfolio-3d-v1.0.0';
-const STATIC_CACHE = 'static-v1.0.0';
-const DYNAMIC_CACHE = 'dynamic-v1.0.0';
+const STATIC_CACHE = 'portfolio-static-v1.0.0';
+const DYNAMIC_CACHE = 'portfolio-dynamic-v1.0.0';
 
 // Files to cache immediately
 const STATIC_FILES = [
   '/',
   '/offline.html',
-  '/static/js/bundle.js',
-  '/static/css/main.css',
+  '/manifest.json',
+  '/favicon.ico',
+  '/globe.svg',
+  '/file.svg',
+  '/window.svg',
+  '/next.svg',
+  '/vercel.svg'
 ];
 
 // Install event - cache static files
@@ -19,31 +24,38 @@ self.addEventListener('install', (event) => {
         console.log('Caching static files');
         return cache.addAll(STATIC_FILES);
       })
+      .then(() => {
+        console.log('Static files cached successfully');
+        return self.skipWaiting();
+      })
       .catch((error) => {
-        console.log('Cache install failed:', error);
+        console.error('Error caching static files:', error);
       })
   );
-  self.skipWaiting();
 });
 
 // Activate event - clean up old caches
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.map((cacheName) => {
-          if (cacheName !== STATIC_CACHE && cacheName !== DYNAMIC_CACHE) {
-            console.log('Deleting old cache:', cacheName);
-            return caches.delete(cacheName);
-          }
-        })
-      );
-    })
+    caches.keys()
+      .then((cacheNames) => {
+        return Promise.all(
+          cacheNames.map((cacheName) => {
+            if (cacheName !== STATIC_CACHE && cacheName !== DYNAMIC_CACHE) {
+              console.log('Deleting old cache:', cacheName);
+              return caches.delete(cacheName);
+            }
+          })
+        );
+      })
+      .then(() => {
+        console.log('Service Worker activated');
+        return self.clients.claim();
+      })
   );
-  self.clients.claim();
 });
 
-// Fetch event - serve from cache or network
+// Fetch event - handle requests
 self.addEventListener('fetch', (event) => {
   const { request } = event;
   const url = new URL(request.url);
@@ -53,25 +65,50 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Skip chrome-extension and other non-http requests
-  if (!url.protocol.startsWith('http')) {
+  // Skip chrome-extension requests
+  if (url.protocol === 'chrome-extension:') {
     return;
   }
 
   // Handle different types of requests
-  if (url.pathname.startsWith('/static/') || url.pathname.startsWith('/_next/')) {
-    // Static assets - cache first strategy
-    event.respondWith(cacheFirst(request));
-  } else if (url.pathname === '/') {
-    // Home page - network first strategy
+  if (url.pathname === '/') {
+    // Home page - network first, fallback to cache
     event.respondWith(networkFirst(request));
+  } else if (isStaticAsset(url.pathname)) {
+    // Static assets - cache first, fallback to network
+    event.respondWith(cacheFirst(request));
+  } else if (isAPIRequest(url.pathname)) {
+    // API requests - network first, no caching
+    event.respondWith(networkOnly(request));
   } else {
-    // Other pages - stale while revalidate strategy
+    // Other pages - stale while revalidate
     event.respondWith(staleWhileRevalidate(request));
   }
 });
 
-// Cache first strategy for static assets
+// Network first strategy
+async function networkFirst(request) {
+  try {
+    const response = await fetch(request);
+    if (response.ok) {
+      const cache = await caches.open(DYNAMIC_CACHE);
+      cache.put(request, response.clone());
+      return response;
+    }
+  } catch (error) {
+    console.log('Network failed, trying cache:', error);
+  }
+
+  const cachedResponse = await caches.match(request);
+  if (cachedResponse) {
+    return cachedResponse;
+  }
+
+  // Fallback to offline page
+  return caches.match('/offline.html');
+}
+
+// Cache first strategy
 async function cacheFirst(request) {
   const cachedResponse = await caches.match(request);
   if (cachedResponse) {
@@ -79,53 +116,70 @@ async function cacheFirst(request) {
   }
 
   try {
-    const networkResponse = await fetch(request);
-    if (networkResponse.ok) {
-      const cache = await caches.open(DYNAMIC_CACHE);
-      cache.put(request, networkResponse.clone());
+    const response = await fetch(request);
+    if (response.ok) {
+      const cache = await caches.open(STATIC_CACHE);
+      cache.put(request, response.clone());
     }
-    return networkResponse;
+    return response;
   } catch (error) {
-    console.log('Network request failed:', error);
-    return new Response('Network error', { status: 503 });
+    console.error('Cache first failed:', error);
+    return new Response('Asset not available', { status: 404 });
   }
 }
 
-// Network first strategy for home page
-async function networkFirst(request) {
+// Network only strategy
+async function networkOnly(request) {
   try {
-    const networkResponse = await fetch(request);
-    if (networkResponse.ok) {
-      const cache = await caches.open(DYNAMIC_CACHE);
-      cache.put(request, networkResponse.clone());
-    }
-    return networkResponse;
+    return await fetch(request);
   } catch (error) {
-    console.log('Network request failed, serving from cache:', error);
-    const cachedResponse = await caches.match(request);
-    if (cachedResponse) {
-      return cachedResponse;
-    }
-    return caches.match('/offline.html');
+    console.error('Network only failed:', error);
+    return new Response('API not available', { status: 503 });
   }
 }
 
-// Stale while revalidate strategy for other pages
+// Stale while revalidate strategy
 async function staleWhileRevalidate(request) {
   const cache = await caches.open(DYNAMIC_CACHE);
   const cachedResponse = await cache.match(request);
 
-  const fetchPromise = fetch(request).then((networkResponse) => {
-    if (networkResponse.ok) {
-      cache.put(request, networkResponse.clone());
-    }
-    return networkResponse;
-  }).catch(() => {
-    // Network failed, return cached response if available
-    return cachedResponse;
-  });
+  // Return cached response immediately if available
+  if (cachedResponse) {
+    // Update cache in background
+    fetch(request)
+      .then((response) => {
+        if (response.ok) {
+          cache.put(request, response);
+        }
+      })
+      .catch((error) => {
+        console.log('Background update failed:', error);
+      });
 
-  return cachedResponse || fetchPromise;
+    return cachedResponse;
+  }
+
+  // No cache, fetch from network
+  try {
+    const response = await fetch(request);
+    if (response.ok) {
+      cache.put(request, response.clone());
+    }
+    return response;
+  } catch (error) {
+    console.error('Stale while revalidate failed:', error);
+    return new Response('Page not available', { status: 404 });
+  }
+}
+
+// Helper functions
+function isStaticAsset(pathname) {
+  const staticExtensions = ['.js', '.css', '.png', '.jpg', '.jpeg', '.gif', '.webp', '.svg', '.woff', '.woff2', '.ttf', '.eot'];
+  return staticExtensions.some(ext => pathname.endsWith(ext));
+}
+
+function isAPIRequest(pathname) {
+  return pathname.startsWith('/api/');
 }
 
 // Background sync for offline actions
@@ -137,10 +191,10 @@ self.addEventListener('sync', (event) => {
 
 async function doBackgroundSync() {
   try {
-    // Perform background sync tasks
+    // Handle any pending offline actions
     console.log('Background sync completed');
   } catch (error) {
-    console.log('Background sync failed:', error);
+    console.error('Background sync failed:', error);
   }
 }
 
@@ -149,9 +203,9 @@ self.addEventListener('push', (event) => {
   if (event.data) {
     const data = event.data.json();
     const options = {
-      body: data.body,
-      icon: '/icon-192x192.png',
-      badge: '/badge-72x72.png',
+      body: data.body || 'New update available',
+      icon: '/favicon.ico',
+      badge: '/favicon.ico',
       vibrate: [100, 50, 100],
       data: {
         dateOfArrival: Date.now(),
@@ -160,7 +214,7 @@ self.addEventListener('push', (event) => {
     };
 
     event.waitUntil(
-      self.registration.showNotification(data.title, options)
+      self.registration.showNotification(data.title || 'Portfolio Update', options)
     );
   }
 });
@@ -168,12 +222,13 @@ self.addEventListener('push', (event) => {
 // Notification click handling
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
+  
   event.waitUntil(
     clients.openWindow('/')
   );
 });
 
-// Message handling for communication with main thread
+// Message handling
 self.addEventListener('message', (event) => {
   if (event.data && event.data.type === 'SKIP_WAITING') {
     self.skipWaiting();

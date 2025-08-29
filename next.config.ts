@@ -32,6 +32,8 @@ const nextConfig: NextConfig = {
         new BundleAnalyzerPlugin({
           analyzerMode: 'static',
           openAnalyzer: false,
+          generateStatsFile: true,
+          statsFilename: 'bundle-stats.json',
         })
       );
     }
@@ -42,7 +44,7 @@ const nextConfig: NextConfig = {
       'three': require.resolve('three'),
     };
 
-    // Split chunks for better caching
+    // Enhanced split chunks for better caching
     config.optimization.splitChunks = {
       chunks: 'all',
       cacheGroups: {
@@ -51,26 +53,61 @@ const nextConfig: NextConfig = {
           name: 'vendors',
           chunks: 'all',
           priority: 10,
+          reuseExistingChunk: true,
         },
         three: {
           test: /[\\/]node_modules[\\/](three|@react-three)[\\/]/,
           name: 'three',
           chunks: 'all',
           priority: 20,
+          reuseExistingChunk: true,
         },
         framer: {
           test: /[\\/]node_modules[\\/](framer-motion)[\\/]/,
           name: 'framer',
           chunks: 'all',
           priority: 15,
+          reuseExistingChunk: true,
         },
         gsap: {
           test: /[\\/]node_modules[\\/](gsap|@gsap)[\\/]/,
           name: 'gsap',
           chunks: 'all',
           priority: 15,
+          reuseExistingChunk: true,
+        },
+        // Separate React chunks
+        react: {
+          test: /[\\/]node_modules[\\/](react|react-dom)[\\/]/,
+          name: 'react',
+          chunks: 'all',
+          priority: 25,
+          reuseExistingChunk: true,
+        },
+        // Separate Next.js chunks
+        next: {
+          test: /[\\/]node_modules[\\/](next)[\\/]/,
+          name: 'next',
+          chunks: 'all',
+          priority: 30,
+          reuseExistingChunk: true,
         },
       },
+    };
+
+    // Enable tree shaking
+    config.optimization.usedExports = true;
+    config.optimization.sideEffects = false;
+
+    // Optimize module resolution
+    config.resolve.modules = ['node_modules', 'src'];
+    config.resolve.extensions = ['.ts', '.tsx', '.js', '.jsx', '.json'];
+
+    // Performance hints
+    config.performance = {
+      hints: dev ? false : 'warning',
+      maxEntrypointSize: 512000,
+      maxAssetSize: 512000,
     };
 
     return config;
@@ -81,6 +118,11 @@ const nextConfig: NextConfig = {
     formats: ['image/webp', 'image/avif'],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+    // Enable modern image formats
+    dangerouslyAllowSVG: true,
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
+    // Optimize loading
+    minimumCacheTTL: 60,
   },
 
   // Compression
@@ -109,6 +151,14 @@ const nextConfig: NextConfig = {
           {
             key: 'X-XSS-Protection',
             value: '1; mode=block',
+          },
+          {
+            key: 'Referrer-Policy',
+            value: 'strict-origin-when-cross-origin',
+          },
+          {
+            key: 'Permissions-Policy',
+            value: 'camera=(), microphone=(), geolocation=()',
           },
         ],
       },
@@ -139,7 +189,51 @@ const nextConfig: NextConfig = {
           },
         ],
       },
+      {
+        source: '/(.*).(png|jpg|jpeg|gif|webp|avif|svg)',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
+      {
+        source: '/(.*).(woff|woff2|ttf|eot)',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
     ];
+  },
+
+  // Redirects for better performance
+  async redirects() {
+    return [
+      {
+        source: '/old-portfolio',
+        destination: '/',
+        permanent: true,
+      },
+    ];
+  },
+
+  // Rewrites for API optimization
+  async rewrites() {
+    return [
+      {
+        source: '/api/:path*',
+        destination: '/api/:path*',
+      },
+    ];
+  },
+
+  // Environment variables
+  env: {
+    CUSTOM_KEY: process.env.CUSTOM_KEY,
   },
 };
 

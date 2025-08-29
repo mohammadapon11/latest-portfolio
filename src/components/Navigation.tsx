@@ -82,7 +82,7 @@ const Navigation = () => {
               </div>
               <div className="hidden sm:block">
                 <div className="text-xl font-black text-white">
-                  <span className="gradient-text">Portfolio</span>
+                  <span className="gradient-text">Mohammad Apon</span>
                 </div>
                 <div className="text-xs text-cyan-400 font-medium tracking-wider">
                   FRONTEND DEVELOPER

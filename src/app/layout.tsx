@@ -1,62 +1,90 @@
-import type { Metadata, Viewport } from "next";
-import "./globals.css";
-import ServiceWorkerRegistration from "@/components/ServiceWorkerRegistration";
+import type { Metadata } from 'next';
+import './globals.css';
 
 export const metadata: Metadata = {
-  title: "Portfolio - Frontend Developer",
-  description: "Professional portfolio showcasing 3 years of frontend development experience with modern technologies and 3D animations",
-  keywords: ["Frontend Developer", "React", "Next.js", "TypeScript", "3D Portfolio", "Web Development"],
-  authors: [{ name: "Frontend Developer" }],
-  manifest: "/manifest.json",
-  robots: "index, follow",
+  title: '3D Portfolio - Frontend Developer',
+  description: 'Professional portfolio showcasing 3D web development, React, Next.js, and modern web technologies.',
+  keywords: ['portfolio', '3D', 'frontend', 'developer', 'react', 'nextjs', 'typescript', 'webgl'],
+  authors: [{ name: 'Frontend Developer' }],
+  creator: 'Frontend Developer',
+  publisher: 'Frontend Developer',
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  metadataBase: new URL('https://your-domain.com'),
+  alternates: {
+    canonical: '/',
+  },
   openGraph: {
-    type: "website",
-    locale: "en_US",
-    url: "https://your-portfolio.com",
-    title: "Portfolio - Frontend Developer",
-    description: "Professional portfolio showcasing 3 years of frontend development experience",
-    siteName: "Portfolio 3D",
+    title: '3D Portfolio - Frontend Developer',
+    description: 'Professional portfolio showcasing 3D web development, React, Next.js, and modern web technologies.',
+    url: 'https://your-domain.com',
+    siteName: '3D Portfolio',
+    images: [
+      {
+        url: '/og-image.jpg',
+        width: 1200,
+        height: 630,
+        alt: '3D Portfolio Preview',
+      },
+    ],
+    locale: 'en_US',
+    type: 'website',
   },
   twitter: {
-    card: "summary_large_image",
-    title: "Portfolio - Frontend Developer",
-    description: "Professional portfolio showcasing 3 years of frontend development experience",
+    card: 'summary_large_image',
+    title: '3D Portfolio - Frontend Developer',
+    description: 'Professional portfolio showcasing 3D web development, React, Next.js, and modern web technologies.',
+    images: ['/og-image.jpg'],
   },
-};
-
-export const viewport: Viewport = {
-  width: "device-width",
-  initialScale: 1,
-  maximumScale: 5,
-  userScalable: true,
-  themeColor: "#000000",
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  verification: {
+    google: 'your-google-verification-code',
+  },
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en" className="scroll-smooth">
       <head>
         {/* Preload critical resources */}
-        <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+        <link
+          rel="preload"
+          href="/fonts/inter-var.woff2"
+          as="font"
+          type="font/woff2"
+          crossOrigin="anonymous"
+        />
+        
+        {/* DNS prefetch for external resources */}
         <link rel="dns-prefetch" href="//fonts.googleapis.com" />
         <link rel="dns-prefetch" href="//fonts.gstatic.com" />
         
-        {/* Performance hints */}
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-        <meta name="color-scheme" content="dark" />
+        {/* Preconnect to external domains */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         
-        {/* PWA support */}
-        <link rel="manifest" href="/manifest.json" />
-        <link rel="apple-touch-icon" href="/icon-192x192.png" />
-        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+        {/* Resource hints */}
+        <link rel="preload" href="/globe.svg" as="image" />
+        <link rel="preload" href="/file.svg" as="image" />
       </head>
       <body className="antialiased bg-black text-white overflow-x-hidden">
-        <ServiceWorkerRegistration />
         {children}
       </body>
     </html>
