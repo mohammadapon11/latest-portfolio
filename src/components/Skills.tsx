@@ -126,7 +126,7 @@ const Skills = () => {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
+          transition={{ duration: 0 }}
           viewport={{ once: true }}
           className="text-center md:mb-20 mb-12"
         >
@@ -210,7 +210,7 @@ const Skills = () => {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
+          transition={{ duration: 0 }}
           viewport={{ once: true }}
           className="text-center md:mb-20 mb-12"
         >
@@ -248,7 +248,7 @@ const Skills = () => {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
+          transition={{ duration: 0 }}
           viewport={{ once: true }}
           className="relative p-12 bg-gradient-to-r from-purple-900/20 to-pink-900/20 rounded-3xl border border-purple-500/30 backdrop-blur-xl overflow-hidden"
         >

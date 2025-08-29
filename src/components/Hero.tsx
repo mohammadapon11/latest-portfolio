@@ -224,7 +224,7 @@ const Hero = () => {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: isVisible ? 1 : 0, y: isVisible ? 0 : 20 }}
-            transition={{ duration: 0.3 }}
+            transition={{ duration: 0 }}
             className="mb-6 md:mb-8"
           >
             <div className="flex items-center justify-center gap-3 mb-2 md:mb-6">
@@ -351,13 +351,13 @@ const Hero = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: isVisible ? 1 : 0 }}
             transition={{ duration: 0.5, delay: 0.5 }}
-            className="absolute -bottom-12 sm:-bottom-16 left-1/2 transform -translate-x-1/2 md:block hidden"
+            className="absolute bottom-8 right-8 md:bottom-12 md:-right-[322px] transform md:block hidden"
           >
             <motion.button
               onClick={scrollToAbout}
               animate={{ y: isVisible ? [0, 8, 0] : 0 }}
               transition={{ duration: 2.5, repeat: Infinity }}
-              className="group p-4 rounded-full bg-gradient-to-r from-cyan-500/20 to-purple-500/20 backdrop-blur-md hover:from-cyan-500/40 hover:to-purple-500/40 transition-all duration-300 border border-cyan-400/30"
+              className="group p-4 rounded-full bg-gradient-to-r from-cyan-500/20 to-purple-500/20 backdrop-blur-md hover:from-cyan-500/40 hover:to-purple-500/40 transition-all duration-300 border border-cyan-400/30 shadow-lg hover:shadow-cyan-500/25"
             >
               <ArrowDown size={28} className="text-cyan-400 group-hover:text-white transition-colors" />
             </motion.button>
