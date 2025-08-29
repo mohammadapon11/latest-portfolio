@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: '3D Portfolio - Frontend Developer',
+  title: 'Mohammad Apon - Frontend Developer',
   description: 'Professional portfolio showcasing 3D web development, React, Next.js, and modern web technologies.',
   keywords: ['portfolio', '3D', 'frontend', 'developer', 'react', 'nextjs', 'typescript', 'webgl'],
   authors: [{ name: 'Frontend Developer' }],
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     canonical: '/',
   },
   openGraph: {
-    title: '3D Portfolio - Frontend Developer',
+    title: 'Mohammad Apon - Frontend Developer',
     description: 'Professional portfolio showcasing 3D web development, React, Next.js, and modern web technologies.',
     url: 'https://your-domain.com',
     siteName: '3D Portfolio',
@@ -43,7 +43,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: '3D Portfolio - Frontend Developer',
+    title: 'Mohammad Apon - Frontend Developer',
     description: 'Professional portfolio showcasing 3D web development, React, Next.js, and modern web technologies.',
     images: ['/og-image.jpg'],
   },
