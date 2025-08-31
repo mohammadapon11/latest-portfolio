@@ -222,17 +222,28 @@ const Hero = () => {
         <div className="text-center max-w-5xl mx-auto">
           {/* Optimized Greeting */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: isVisible ? 1 : 0, y: isVisible ? 0 : 20 }}
-            transition={{ duration: 0 }}
+            initial={{ scale: 0.8, rotateY: -15 }}
+            whileInView={{ scale: 1, rotateY: 0 }}
+            transition={{ duration: 0.3, type: "spring", stiffness: 200 }}
+            viewport={{ once: true }}
             className="mb-6 md:mb-8"
           >
             <div className="flex items-center justify-center gap-3 mb-2 md:mb-6">
-              <Sparkles className="text-cyan-400 animate-pulse" size={24} />
+              <motion.div
+                animate={{ rotate: [0, 360] }}
+                transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+              >
+                <Sparkles className="text-cyan-400" size={24} />
+              </motion.div>
               <span className="text-lg md:text-xl text-cyan-400 font-medium tracking-wider">
                 FUTURE IS NOW
               </span>
-              <Sparkles className="text-cyan-400 animate-pulse" size={24} />
+              <motion.div
+                animate={{ rotate: [0, -360] }}
+                transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+              >
+                <Sparkles className="text-cyan-400" size={24} />
+              </motion.div>
             </div>
             <span className="text-lg md:text-xl text-indigo-400 dark:text-indigo-300 font-medium tracking-wider">
               Hello, I&apos;m
@@ -241,9 +252,10 @@ const Hero = () => {
 
           {/* Optimized Main Title */}
           <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: isVisible ? 1 : 0, y: isVisible ? 0 : 20 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
+            initial={{ scale: 0.5, rotateX: 90 }}
+            whileInView={{ scale: 1, rotateX: 0 }}
+            transition={{ duration: 0.4, type: "spring", stiffness: 150, delay: 0.1 }}
+            viewport={{ once: true }}
             className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black text-white mb-6 md:mb-8 lg:mb-10 relative"
           >
             <span className="relative">
@@ -252,8 +264,11 @@ const Hero = () => {
               </span>
               <motion.div
                 className="absolute -inset-1 bg-gradient-to-r from-cyan-400 via-indigo-500 to-purple-600 rounded-lg blur opacity-20"
-                animate={{ opacity: isVisible ? [0.2, 0.4, 0.2] : 0.2 }}
-                transition={{ duration: 3, repeat: Infinity }}
+                animate={{ 
+                  scale: [1, 1.05, 1],
+                  opacity: [0.2, 0.4, 0.2]
+                }}
+                transition={{ duration: 2, repeat: Infinity }}
               />
             </span>
             <br />
@@ -263,32 +278,37 @@ const Hero = () => {
               </span>
               <motion.div
                 className="absolute -inset-1 bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 rounded-lg blur opacity-20"
-                animate={{ opacity: isVisible ? [0.2, 0.4, 0.2] : 0.2 }}
-                transition={{ duration: 3, repeat: Infinity, delay: 1 }}
+                animate={{ 
+                  scale: [1, 1.05, 1],
+                  opacity: [0.2, 0.4, 0.2]
+                }}
+                transition={{ duration: 2, repeat: Infinity, delay: 1 }}
               />
             </span>
           </motion.h1>
 
           {/* Optimized Description */}
           <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: isVisible ? 1 : 0, y: isVisible ? 0 : 20 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
+            initial={{ x: -100, scale: 0.8 }}
+            whileInView={{ x: 0, scale: 1 }}
+            transition={{ duration: 0.3, type: "spring", stiffness: 100, delay: 0.2 }}
+            viewport={{ once: true }}
             className="text-base sm:text-lg md:text-xl text-gray-300 mb-8 md:mb-10 max-w-3xl mx-auto leading-relaxed font-light px-4 sm:px-0"
           >
             <span className="text-cyan-400 font-medium">Crafting</span> exceptional digital experiences with{' '}
             <span className="text-indigo-400 font-medium">cutting-edge technologies</span>. 
             Specialized in <span className="text-purple-400 font-medium">React</span>,{' '}
             <span className="text-pink-400 font-medium">Next.js</span>, and{' '}
-            <span className="text-red-400 font-medium">TypeScript</span> with 3+ years of expertise 
+            <span className="text-red-400 font-medium">TypeScript</span> with 2+ years of expertise 
             in building <span className="text-cyan-400 font-medium">scalable web applications</span>.
           </motion.p>
 
           {/* Optimized CTA Buttons */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: isVisible ? 1 : 0, y: isVisible ? 0 : 20 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
+            initial={{ y: 50, scale: 0.8 }}
+            whileInView={{ y: 0, scale: 1 }}
+            transition={{ duration: 0.3, type: "spring", stiffness: 100, delay: 0.3 }}
+            viewport={{ once: true }}
             className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center items-center mb-8 md:mb-12 px-4 sm:px-0"
           >
             <motion.button
@@ -321,23 +341,33 @@ const Hero = () => {
 
           {/* Optimized Social Links */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: isVisible ? 1 : 0, y: isVisible ? 0 : 20 }}
-            transition={{ duration: 0.5, delay: 0.4 }}
+            initial={{ scale: 0.8, rotate: -5 }}
+            whileInView={{ scale: 1, rotate: 0 }}
+            transition={{ duration: 0.3, type: "spring", stiffness: 150 }}
+            viewport={{ once: true }}
             className="flex justify-center items-center gap-4 sm:gap-6 mb-8 md:mb-12 px-4 sm:px-0"
           >
             {[
               { icon: Github, href: 'https://github.com/mohammadapon11', label: 'GitHub', color: 'from-gray-600 to-gray-800' },
               { icon: Linkedin, href: 'https://www.linkedin.com/in/mohammadapon11/', label: 'LinkedIn', color: 'from-blue-600 to-blue-800' },
               { icon: Mail, href: 'mailto:mohammadapon11@gmail.com', label: 'Email', color: 'from-red-500 to-red-700' },
-            ].map((social) => (
+            ].map((social, index) => (
               <motion.a
                 key={social.label}
                 href={social.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                whileHover={{ scale: 1.08, y: -3, rotate: 360 }}
-                whileTap={{ scale: 0.92 }}
+                initial={{ scale: 0, rotate: 180 }}
+                whileInView={{ scale: 1, rotate: 0 }}
+                transition={{ 
+                  duration: 0.3, 
+                  type: "spring", 
+                  stiffness: 200, 
+                  delay: index * 0.1 
+                }}
+                viewport={{ once: true }}
+                whileHover={{ scale: 1.15, y: -5, rotate: 5 }}
+                whileTap={{ scale: 0.95 }}
                 className={`p-4 bg-gradient-to-br ${social.color} rounded-2xl shadow-2xl hover:shadow-lg transition-all duration-300 text-white backdrop-blur-sm border border-white/20`}
                 aria-label={social.label}
               >
@@ -348,15 +378,19 @@ const Hero = () => {
 
           {/* Optimized Scroll Indicator */}
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: isVisible ? 1 : 0 }}
-            transition={{ duration: 0.5, delay: 0.5 }}
+            initial={{ scale: 0, rotate: 45 }}
+            whileInView={{ scale: 1, rotate: 0 }}
+            transition={{ duration: 0.3, type: "spring", stiffness: 200 }}
+            viewport={{ once: true }}
             className="absolute bottom-8 right-8 md:bottom-12 md:-right-[322px] transform md:block hidden"
           >
             <motion.button
               onClick={scrollToAbout}
-              animate={{ y: isVisible ? [0, 8, 0] : 0 }}
-              transition={{ duration: 2.5, repeat: Infinity }}
+              animate={{ 
+                y: [0, 8, 0],
+                scale: [1, 1.1, 1]
+              }}
+              transition={{ duration: 2, repeat: Infinity }}
               className="group p-4 rounded-full bg-gradient-to-r from-cyan-500/20 to-purple-500/20 backdrop-blur-md hover:from-cyan-500/40 hover:to-purple-500/40 transition-all duration-300 border border-cyan-400/30 shadow-lg hover:shadow-cyan-500/25"
             >
               <ArrowDown size={28} className="text-cyan-400 group-hover:text-white transition-colors" />

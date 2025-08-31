@@ -105,18 +105,28 @@ const Contact = () => {
 
       <div className="container-custom relative z-10">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0 }}
+          initial={{ scale: 0.8, rotateY: -15 }}
+          whileInView={{ scale: 1, rotateY: 0 }}
+          transition={{ duration: 0.4, type: "spring", stiffness: 150 }}
           viewport={{ once: true }}
           className="text-center md:mb-20 mb-12"
         >
           <div className="flex items-center justify-center gap-3 mb-6">
-            <Rocket className="text-pink-400 animate-pulse" size={32} />
+            <motion.div
+              animate={{ rotate: [0, 360] }}
+              transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+            >
+              <Rocket className="text-pink-400" size={32} />
+            </motion.div>
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-white mb-6">
               Get In <span className="gradient-text">Touch</span>
             </h2>
-            <Brain className="text-pink-400 animate-pulse" size={32} />
+            <motion.div
+              animate={{ rotate: [0, -360] }}
+              transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+            >
+              <Brain className="text-pink-400" size={32} />
+            </motion.div>
           </div>
           <p className="text-xl text-gray-300 max-w-4xl mx-auto leading-relaxed font-light">
             I&apos;m always excited to hear about new opportunities and interesting projects. 
@@ -127,18 +137,28 @@ const Contact = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 mb-20">
           {/* Futuristic Contact Form */}
           <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0 }}
+            initial={{ scale: 0.8, rotateY: 15, x: -50 }}
+            whileInView={{ scale: 1, rotateY: 0, x: 0 }}
+            transition={{ duration: 0.4, type: "spring", stiffness: 150 }}
             viewport={{ once: true }}
             className="relative"
           >
             <div className="flex items-center gap-3 mb-8">
-              <Target className="text-pink-400 animate-pulse" size={28} />
+              <motion.div
+                animate={{ rotate: [0, 360] }}
+                transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+              >
+                <Target className="text-pink-400" size={28} />
+              </motion.div>
               <h3 className="text-3xl font-black text-white">
                 Send Message
               </h3>
-              <Sparkles className="text-pink-400 animate-pulse" size={28} />
+              <motion.div
+                animate={{ rotate: [0, -360] }}
+                transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+              >
+                <Sparkles className="text-pink-400" size={28} />
+              </motion.div>
             </div>
             
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -337,18 +357,28 @@ const Contact = () => {
 
           {/* Futuristic Contact Information */}
           <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0 }}
+            initial={{ scale: 0.8, rotateY: -15, x: 50 }}
+            whileInView={{ scale: 1, rotateY: 0, x: 0 }}
+            transition={{ duration: 0.4, type: "spring", stiffness: 150 }}
             viewport={{ once: true }}
             className="space-y-8"
           >
             <div className="flex items-center gap-3 mb-8">
-              <Cpu className="text-pink-400 animate-pulse" size={28} />
+              <motion.div
+                animate={{ rotate: [0, 360] }}
+                transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+              >
+                <Cpu className="text-pink-400" size={28} />
+              </motion.div>
               <h3 className="text-3xl font-black text-white">
                 Contact Info
               </h3>
-              <Atom className="text-pink-400 animate-pulse" size={28} />
+              <motion.div
+                animate={{ rotate: [0, -360] }}
+                transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+              >
+                <Atom className="text-pink-400" size={28} />
+              </motion.div>
             </div>
 
             {/* Contact Details */}
@@ -379,16 +409,25 @@ const Contact = () => {
                 <motion.a
                   key={contact.title}
                   href={contact.href}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, delay: index * 0.1 }}
+                  initial={{ scale: 0.5, rotateX: 90, y: 50 }}
+                  whileInView={{ scale: 1, rotateX: 0, y: 0 }}
+                  transition={{ 
+                    duration: 0.4, 
+                    type: "spring", 
+                    stiffness: 150, 
+                    delay: index * 0.1 
+                  }}
                   viewport={{ once: true }}
                   className="group flex items-center gap-6 p-6 bg-gradient-to-br from-slate-900/50 to-slate-800/50 rounded-3xl shadow-2xl hover:shadow-pink-500/25 transition-all duration-500 border border-slate-700/50 hover:border-pink-500/50 backdrop-blur-xl"
                 >
-                  <div className={`w-16 h-16 bg-gradient-to-br ${contact.color} rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-500 shadow-lg`}>
+                  <motion.div 
+                    className={`w-16 h-16 bg-gradient-to-br ${contact.color} rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-500 shadow-lg`}
+                    whileHover={{ rotate: 360, scale: 1.2 }}
+                    transition={{ duration: 0.6 }}
+                  >
                     <contact.icon size={28} className="text-white" />
                     <div className="absolute inset-0 bg-white/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                  </div>
+                  </motion.div>
                   <div>
                     <h4 className="text-lg font-bold text-white mb-2 group-hover:text-pink-400 transition-colors duration-300">
                       {contact.title}
@@ -416,9 +455,14 @@ const Contact = () => {
                     href={social.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.8, delay: index * 0.1 }}
+                    initial={{ scale: 0, rotate: 180 }}
+                    whileInView={{ scale: 1, rotate: 0 }}
+                    transition={{ 
+                      duration: 0.4, 
+                      type: "spring", 
+                      stiffness: 200, 
+                      delay: index * 0.1 
+                    }}
                     viewport={{ once: true }}
                     whileHover={{ scale: 1.2, y: -10, rotate: 360 }}
                     whileTap={{ scale: 0.9 }}
@@ -435,9 +479,9 @@ const Contact = () => {
 
         {/* Futuristic Availability Status */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0 }}
+          initial={{ scale: 0.8, rotateX: 15, y: 50 }}
+          whileInView={{ scale: 1, rotateX: 0, y: 0 }}
+          transition={{ duration: 0.4, type: "spring", stiffness: 150 }}
           viewport={{ once: true }}
           className="relative p-12 bg-gradient-to-r from-pink-900/20 to-purple-900/20 rounded-3xl border border-pink-500/30 backdrop-blur-xl overflow-hidden"
         >
@@ -447,11 +491,21 @@ const Contact = () => {
           
           <div className="relative text-center">
             <div className="flex items-center justify-center gap-3 mb-6">
-              <Target className="text-pink-400 animate-pulse" size={32} />
+              <motion.div
+                animate={{ rotate: [0, 360] }}
+                transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+              >
+                <Target className="text-pink-400" size={32} />
+              </motion.div>
               <h3 className="text-3xl font-black text-white">
                 Current <span className="gradient-text">Status</span>
               </h3>
-              <Sparkles className="text-pink-400 animate-pulse" size={32} />
+              <motion.div
+                animate={{ rotate: [0, -360] }}
+                transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+              >
+                <Sparkles className="text-pink-400" size={32} />
+              </motion.div>
             </div>
             <p className="text-gray-300 mb-8 max-w-3xl mx-auto text-lg font-light">
               I&apos;m currently <span className="text-pink-400 font-medium">available for new opportunities</span> and exciting projects. 
@@ -461,20 +515,32 @@ const Contact = () => {
             
             <div className="flex flex-wrap justify-center gap-6">
               <motion.span 
+                initial={{ scale: 0, rotate: 45 }}
+                whileInView={{ scale: 1, rotate: 0 }}
+                transition={{ duration: 0.3, type: "spring", stiffness: 200, delay: 0.1 }}
+                viewport={{ once: true }}
                 className="px-6 py-3 bg-gradient-to-r from-pink-500/20 to-purple-500/20 text-pink-300 rounded-2xl text-sm font-medium border border-pink-500/30 backdrop-blur-sm"
-                whileHover={{ scale: 1.05, y: -2 }}
+                whileHover={{ scale: 1.05, y: -2, rotate: 2 }}
               >
                 Available for Freelance
               </motion.span>
               <motion.span 
+                initial={{ scale: 0, rotate: -45 }}
+                whileInView={{ scale: 1, rotate: 0 }}
+                transition={{ duration: 0.3, type: "spring", stiffness: 200, delay: 0.2 }}
+                viewport={{ once: true }}
                 className="px-6 py-3 bg-gradient-to-r from-purple-500/20 to-indigo-500/20 text-purple-300 rounded-2xl text-sm font-medium border border-purple-500/30 backdrop-blur-sm"
-                whileHover={{ scale: 1.05, y: -2 }}
+                whileHover={{ scale: 1.05, y: -2, rotate: -2 }}
               >
                 Open to Full-time Roles
               </motion.span>
               <motion.span 
+                initial={{ scale: 0, rotate: 45 }}
+                whileInView={{ scale: 1, rotate: 0 }}
+                transition={{ duration: 0.3, type: "spring", stiffness: 200, delay: 0.3 }}
+                viewport={{ once: true }}
                 className="px-6 py-3 bg-gradient-to-r from-indigo-500/20 to-blue-500/20 text-indigo-300 rounded-2xl text-sm font-medium border border-indigo-500/30 backdrop-blur-sm"
-                whileHover={{ scale: 1.05, y: -2 }}
+                whileHover={{ scale: 1.05, y: -2, rotate: 2 }}
               >
                 Remote Work Preferred
               </motion.span>
