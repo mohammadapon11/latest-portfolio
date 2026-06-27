@@ -332,7 +332,7 @@ const Hero = () => {
             <span className="text-indigo-400 font-medium">cutting-edge technologies</span>. 
             Specialized in <span className="text-purple-400 font-medium">React</span>,{' '}
             <span className="text-pink-400 font-medium">Next.js</span>, and{' '}
-            <span className="text-red-400 font-medium">TypeScript</span> with 2+ years of expertise 
+            <span className="text-red-400 font-medium">TypeScript</span> with 3+ years of expertise 
             in building <span className="text-cyan-400 font-medium">scalable web applications</span>.
           </motion.p>
 

@@ -362,7 +362,7 @@ const Projects = () => {
         >
           {[
             { number: '12+', label: 'Projects Completed', icon: '🎯', color: 'from-purple-500 to-pink-500' },
-            { number: '2+', label: 'Years Experience', icon: '⏰', color: 'from-pink-500 to-indigo-500' },
+            { number: '3+', label: 'Years Experience', icon: '⏰', color: 'from-pink-500 to-indigo-500' },
             { number: '100%', label: 'Client Satisfaction', icon: '⭐', color: 'from-indigo-500 to-blue-500' }
           ].map((stat, index) => (
             <motion.div
