@@ -86,7 +86,7 @@ const Hero = () => {
     // Create a temporary link element for download
     const link = document.createElement('a');
     link.href = directDownloadUrl;
-    link.download = 'Frontend_Developer_CV_Mohammad_Apon.pdf';
+    link.download = 'Mohammad_Apon_Frontend_Engineer.pdf';
     link.target = '_blank';
     
     // Add click event to trigger download
