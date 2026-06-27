@@ -250,42 +250,75 @@ const Hero = () => {
             </span>
           </motion.div>
 
-          {/* Optimized Main Title */}
-          <motion.h1
-            initial={{ scale: 0.5, rotateX: 90 }}
-            whileInView={{ scale: 1, rotateX: 0 }}
-            transition={{ duration: 0.4, type: "spring", stiffness: 150, delay: 0.1 }}
-            viewport={{ once: true }}
-            className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black text-white mb-6 md:mb-8 lg:mb-10 relative"
-          >
-            <span className="relative">
-              <span className="gradient-text bg-gradient-to-r from-cyan-400 via-indigo-500 to-purple-600 bg-clip-text text-transparent">
-                FRONTEND
-              </span>
-              <motion.div
-                className="absolute -inset-1 bg-gradient-to-r from-cyan-400 via-indigo-500 to-purple-600 rounded-lg blur opacity-20"
-                animate={{ 
-                  scale: [1, 1.05, 1],
-                  opacity: [0.2, 0.4, 0.2]
-                }}
-                transition={{ duration: 2, repeat: Infinity }}
-              />
-            </span>
-            <br />
-            <span className="relative">
-              <span className="gradient-text bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 bg-clip-text text-transparent">
-                DEVELOPER
-              </span>
-              <motion.div
-                className="absolute -inset-1 bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 rounded-lg blur opacity-20"
-                animate={{ 
-                  scale: [1, 1.05, 1],
-                  opacity: [0.2, 0.4, 0.2]
-                }}
-                transition={{ duration: 2, repeat: Infinity, delay: 1 }}
-              />
-            </span>
-          </motion.h1>
+          {/* Optimized Main Title + Image */}
+{/* Professional Main Title + Image Section */}
+<motion.div
+  initial={{ opacity: 0, y: 40 }}
+  whileInView={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.6, type: "spring", stiffness: 100 }}
+  viewport={{ once: true }}
+  className="flex flex-col lg:flex-row items-center justify-between gap-10 lg:gap-16 mb-8 lg:mb-12"
+>
+  {/* Left Side - Title */}
+  <div className="flex-1 text-center lg:text-left">
+    <motion.div
+      initial={{ opacity: 0 }}
+      whileInView={{ opacity: 1 }}
+      transition={{ delay: 0.2 }}
+      className="mb-6"
+    >
+      <span className="inline-flex items-center gap-3 px-6 py-2.5 bg-white/5 backdrop-blur-md border border-white/10 rounded-full text-sm font-medium text-cyan-400 tracking-[3px]">
+        <Sparkles size={18} />
+        FUTURE IS NOW
+      </span>
+    </motion.div>
+
+    <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-[5.5rem] xl:text-[6rem] font-black leading-[1.05] text-white">
+      <span className="block bg-gradient-to-r from-cyan-300 via-indigo-400 to-purple-400 bg-clip-text text-transparent">
+        FRONTEND
+      </span>
+      <span className="block bg-gradient-to-r from-purple-400 via-pink-400 to-rose-400 bg-clip-text text-transparent mt-1">
+        DEVELOPER
+      </span>
+    </h1>
+
+    <div className="h-1.5 w-20 bg-gradient-to-r from-cyan-400 to-purple-500 rounded-full mx-auto lg:mx-0 mt-6" />
+  </div>
+
+  {/* Right Side - Professional Image */}
+  <motion.div
+    initial={{ opacity: 0, scale: 0.85, rotate: -8 }}
+    whileInView={{ opacity: 1, scale: 1, rotate: 0 }}
+    transition={{ duration: 0.7, delay: 0.3 }}
+    viewport={{ once: true }}
+    className="flex-shrink-0 relative group"
+  >
+    <div className="relative">
+      {/* Main Image */}
+      <div className="relative z-10 overflow-hidden rounded-3xl shadow-2xl">
+        <img
+          src="/hero.png"
+          alt="Mohammad Apon - Professional Frontend Developer"
+          className="w-[280px] h-[280px] sm:w-[320px] sm:h-[320px] md:w-[360px] md:h-[360px] lg:w-[400px] lg:h-[400px] object-cover transition-all duration-500 group-hover:scale-105"
+        />
+        
+        {/* Subtle Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+      </div>
+
+      {/* Premium Glow Border */}
+      <div className="absolute -inset-4 bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 rounded-[2rem] opacity-20 blur-2xl -z-10 group-hover:opacity-30 transition-opacity duration-500" />
+      
+      {/* Inner Border */}
+      <div className="absolute inset-0 border border-white/20 rounded-3xl pointer-events-none" />
+    </div>
+
+    {/* Small floating badge */}
+    <div className="absolute -top-12 -right-4 lg:block hidden bg-black/80 backdrop-blur-md text-xs font-mono px-4 py-2 rounded-2xl border border-cyan-400/30 shadow-xl">
+      <span className="text-emerald-400">●</span> Available for work
+    </div>
+  </motion.div>
+</motion.div>
 
           {/* Optimized Description */}
           <motion.p
