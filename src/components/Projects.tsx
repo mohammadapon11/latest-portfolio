@@ -58,7 +58,7 @@ const Projects = () => {
       color: 'from-blue-500 to-purple-500'
     },
     {
-      id: 4,
+      id: 5,
       title: 'Jobs Gonjo - Job Portal',
       description: 'Comprehensive job portal with job listings, application management, and employer dashboard for efficient hiring.',
       image: '/Jobs-gonjo.webp',
@@ -70,7 +70,7 @@ const Projects = () => {
       color: 'from-pink-500 to-red-500'
     },
     {
-      id: 5,
+      id: 6,
       title: 'Relaxa music - Music Listener website',
       description: 'Music streaming platform with playlist management, audio controls, and personalized music recommendations.',
       image: '/relaxa-music.webp',
