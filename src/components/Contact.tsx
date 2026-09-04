@@ -21,6 +21,27 @@ import {
 } from 'lucide-react';
 import { AnimatePresence } from 'framer-motion';
 
+const contactParticles = [
+  { left: '12%', top: '18%', duration: '8s', delay: '0.5s' },
+  { left: '85%', top: '15%', duration: '10s', delay: '1.2s' },
+  { left: '24%', top: '75%', duration: '7.5s', delay: '2.1s' },
+  { left: '72%', top: '82%', duration: '9s', delay: '0.8s' },
+  { left: '45%', top: '25%', duration: '10.5s', delay: '3.4s' },
+  { left: '92%', top: '65%', duration: '8.5s', delay: '1.7s' },
+  { left: '8%', top: '55%', duration: '9.5s', delay: '2.8s' },
+  { left: '60%', top: '40%', duration: '7s', delay: '0.2s' },
+  { left: '35%', top: '90%', duration: '11s', delay: '4.1s' },
+  { left: '80%', top: '35%', duration: '8s', delay: '1.9s' },
+  { left: '18%', top: '38%', duration: '10s', delay: '3.0s' },
+  { left: '52%', top: '68%', duration: '8.8s', delay: '2.5s' },
+  { left: '68%', top: '12%', duration: '9.2s', delay: '0.9s' },
+  { left: '30%', top: '50%', duration: '7.8s', delay: '1.5s' },
+  { left: '88%', top: '88%', duration: '10.2s', delay: '3.8s' },
+  { left: '5%', top: '85%', duration: '8.2s', delay: '2.3s' },
+  { left: '40%', top: '10%', duration: '9.8s', delay: '4.5s' },
+  { left: '78%', top: '52%', duration: '7.2s', delay: '1.1s' },
+];
+
 const Contact = () => {
   const [formData, setFormData] = useState({
     name: '',
@@ -81,23 +102,14 @@ const Contact = () => {
       
       {/* Floating Elements */}
       <div className="absolute inset-0 pointer-events-none">
-        {[...Array(18)].map((_, i) => (
-          <motion.div
+        {contactParticles.map((particle, i) => (
+          <div
             key={i}
             className="absolute w-1 h-1 bg-pink-400 rounded-full"
             style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-            }}
-            animate={{
-              y: [0, -60, 0],
-              opacity: [0.3, 1, 0.3],
-              scale: [0.5, 1.5, 0.5],
-            }}
-            transition={{
-              duration: 7 + Math.random() * 4,
-              repeat: Infinity,
-              delay: Math.random() * 5,
+              left: particle.left,
+              top: particle.top,
+              animation: `contact-particle-float ${particle.duration} ease-in-out ${particle.delay} infinite`,
             }}
           />
         ))}
@@ -112,21 +124,15 @@ const Contact = () => {
           className="text-center md:mb-20 mb-12"
         >
           <div className="flex items-center justify-center gap-3 mb-6">
-            <motion.div
-              animate={{ rotate: [0, 360] }}
-              transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-            >
+            <div style={{ animation: 'spin-clockwise 3s linear infinite' }}>
               <Rocket className="text-pink-400" size={32} />
-            </motion.div>
+            </div>
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-white mb-6">
               Get In <span className="gradient-text">Touch</span>
             </h2>
-            <motion.div
-              animate={{ rotate: [0, -360] }}
-              transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-            >
+            <div style={{ animation: 'spin-counter-clockwise 3s linear infinite' }}>
               <Brain className="text-pink-400" size={32} />
-            </motion.div>
+            </div>
           </div>
           <p className="text-xl text-gray-300 max-w-4xl mx-auto leading-relaxed font-light">
             I&apos;m always excited to hear about new opportunities and interesting projects. 
@@ -144,37 +150,21 @@ const Contact = () => {
             className="relative"
           >
             <div className="flex items-center gap-3 mb-8">
-              <motion.div
-                animate={{ rotate: [0, 360] }}
-                transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
-              >
+              <div style={{ animation: 'spin-clockwise 4s linear infinite' }}>
                 <Target className="text-pink-400" size={28} />
-              </motion.div>
+              </div>
               <h3 className="text-3xl font-black text-white">
                 Send Message
               </h3>
-              <motion.div
-                animate={{ rotate: [0, -360] }}
-                transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
-              >
+              <div style={{ animation: 'spin-counter-clockwise 4s linear infinite' }}>
                 <Sparkles className="text-pink-400" size={28} />
-              </motion.div>
+              </div>
             </div>
             
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="group relative">
-                  <motion.div
-                    className="absolute inset-0 bg-gradient-to-r from-pink-500/20 to-purple-500/20 rounded-2xl blur-xl opacity-0 group-focus-within:opacity-100 transition-all duration-500"
-                    animate={{
-                      scale: [1, 1.02, 1],
-                    }}
-                    transition={{
-                      duration: 2,
-                      repeat: Infinity,
-                      ease: "easeInOut"
-                    }}
-                  />
+                  <div className="input-glow absolute inset-0 bg-gradient-to-r from-pink-500/20 to-purple-500/20 rounded-2xl blur-xl" />
                   <label className="block text-sm font-medium text-gray-300 mb-3 group-focus-within:text-pink-400 transition-colors duration-300">
                     Name
                   </label>
@@ -198,17 +188,7 @@ const Contact = () => {
                   />
                 </div>
                 <div className="group relative">
-                  <motion.div
-                    className="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-indigo-500/20 rounded-2xl blur-xl opacity-0 group-focus-within:opacity-100 transition-all duration-500"
-                    animate={{
-                      scale: [1, 1.02, 1],
-                    }}
-                    transition={{
-                      duration: 2,
-                      repeat: Infinity,
-                      ease: "easeInOut"
-                    }}
-                  />
+                  <div className="input-glow absolute inset-0 bg-gradient-to-r from-purple-500/20 to-indigo-500/20 rounded-2xl blur-xl" />
                   <label className="block text-sm font-medium text-gray-300 mb-3 group-focus-within:text-purple-400 transition-colors duration-300">
                     Email
                   </label>
@@ -234,17 +214,7 @@ const Contact = () => {
               </div>
               
               <div className="group relative">
-                <motion.div
-                  className="absolute inset-0 bg-gradient-to-r from-indigo-500/20 to-blue-500/20 rounded-2xl blur-xl opacity-0 group-focus-within:opacity-100 transition-all duration-500"
-                  animate={{
-                    scale: [1, 1.02, 1],
-                  }}
-                  transition={{
-                    duration: 2,
-                    repeat: Infinity,
-                    ease: "easeInOut"
-                  }}
-                />
+                <div className="input-glow absolute inset-0 bg-gradient-to-r from-indigo-500/20 to-blue-500/20 rounded-2xl blur-xl" />
                 <label className="block text-sm font-medium text-gray-300 mb-3 group-focus-within:text-indigo-400 transition-colors duration-300">
                   Subject
                 </label>
@@ -269,17 +239,7 @@ const Contact = () => {
               </div>
               
               <div className="group relative">
-                <motion.div
-                  className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-cyan-500/20 rounded-2xl blur-xl opacity-0 group-focus-within:opacity-100 transition-all duration-500"
-                  animate={{
-                    scale: [1, 1.02, 1],
-                  }}
-                  transition={{
-                    duration: 2,
-                    repeat: Infinity,
-                    ease: "easeInOut"
-                  }}
-                />
+                <div className="input-glow absolute inset-0 bg-gradient-to-r from-blue-500/20 to-cyan-500/20 rounded-2xl blur-xl" />
                 <label className="block text-sm font-medium text-gray-300 mb-3 group-focus-within:text-blue-400 transition-colors duration-300">
                   Message
                 </label>
@@ -364,21 +324,15 @@ const Contact = () => {
             className="space-y-8"
           >
             <div className="flex items-center gap-3 mb-8">
-              <motion.div
-                animate={{ rotate: [0, 360] }}
-                transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
-              >
+              <div style={{ animation: 'spin-clockwise 4s linear infinite' }}>
                 <Cpu className="text-pink-400" size={28} />
-              </motion.div>
+              </div>
               <h3 className="text-3xl font-black text-white">
                 Contact Info
               </h3>
-              <motion.div
-                animate={{ rotate: [0, -360] }}
-                transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
-              >
+              <div style={{ animation: 'spin-counter-clockwise 4s linear infinite' }}>
                 <Atom className="text-pink-400" size={28} />
-              </motion.div>
+              </div>
             </div>
 
             {/* Contact Details */}
@@ -491,21 +445,15 @@ const Contact = () => {
           
           <div className="relative text-center">
             <div className="flex items-center justify-center gap-3 mb-6">
-              <motion.div
-                animate={{ rotate: [0, 360] }}
-                transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
-              >
+              <div style={{ animation: 'spin-clockwise 4s linear infinite' }}>
                 <Target className="text-pink-400" size={32} />
-              </motion.div>
+              </div>
               <h3 className="text-3xl font-black text-white">
                 Current <span className="gradient-text">Status</span>
               </h3>
-              <motion.div
-                animate={{ rotate: [0, -360] }}
-                transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
-              >
+              <div style={{ animation: 'spin-counter-clockwise 4s linear infinite' }}>
                 <Sparkles className="text-pink-400" size={32} />
-              </motion.div>
+              </div>
             </div>
             <p className="text-gray-300 mb-8 max-w-3xl mx-auto text-lg font-light">
               I&apos;m currently <span className="text-pink-400 font-medium">available for new opportunities</span> and exciting projects. 

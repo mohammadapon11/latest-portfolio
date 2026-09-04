@@ -1,7 +1,6 @@
 'use client';
 
 import { Suspense, lazy, useCallback, useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
 import Navigation from '@/components/Navigation';
 import Hero from '@/components/Hero';
 import PerformanceMonitor from '@/components/PerformanceMonitor';
@@ -28,11 +27,11 @@ const SectionLoader = () => (
 );
 
 export default function Home() {
-  const [isIntersectionSupported, setIsIntersectionSupported] = useState(false);
+  const [isIntersectionSupported, setIsIntersectionSupported] = useState(true);
 
   // Check if IntersectionObserver is supported
   useEffect(() => {
-    setIsIntersectionSupported('IntersectionObserver' in window);
+    setIsIntersectionSupported(typeof window !== 'undefined' && 'IntersectionObserver' in window);
   }, []);
 
   const handleSectionIntersect = useCallback((sectionId: string, isIntersecting: boolean) => {
@@ -64,11 +63,7 @@ export default function Home() {
       <main className="min-h-screen bg-black">
         <Navigation />
 
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0 }}
-        >
+        <div>
           {/* Hero Section - Always loaded */}
           <section id="home">
             <Hero />
@@ -134,7 +129,7 @@ export default function Home() {
               </section>
             </Suspense>
           </ObserverComponent>
-        </motion.div>
+        </div>
 
         {/* Performance Monitor - Only in development */}
         <PerformanceMonitor />

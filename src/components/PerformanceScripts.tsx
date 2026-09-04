@@ -30,23 +30,6 @@ const PerformanceScripts = () => {
       });
     }
 
-    // Intersection Observer polyfill for older browsers
-    if (!('IntersectionObserver' in window)) {
-      console.log('IntersectionObserver not supported, loading polyfill...');
-      
-      // Load polyfill from CDN
-      const script = document.createElement('script');
-      script.src = 'https://polyfill.io/v3/polyfill.min.js?features=IntersectionObserver';
-      script.async = true;
-      script.onload = () => {
-        console.log('IntersectionObserver polyfill loaded successfully');
-      };
-      script.onerror = () => {
-        console.warn('Failed to load IntersectionObserver polyfill');
-      };
-      document.head.appendChild(script);
-    }
-
     // Performance budget monitoring
     const performanceBudget = {
       fcp: 1800,

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useState } from 'react';
 
 interface SimpleIntersectionObserverProps {
   children: React.ReactNode;
@@ -9,17 +9,16 @@ interface SimpleIntersectionObserverProps {
   delay?: number;
 }
 
-// Simple fallback component that shows content immediately
+// Simple fallback component that shows content after delay
 const SimpleIntersectionObserver = ({
   children,
   onIntersect,
   className = '',
-  delay = 0
+  delay = 0,
 }: SimpleIntersectionObserverProps) => {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    // Show content immediately with optional delay
     const timer = setTimeout(() => {
       setIsVisible(true);
       onIntersect?.(true);
@@ -29,8 +28,8 @@ const SimpleIntersectionObserver = ({
   }, [onIntersect, delay]);
 
   return (
-    <div className={className}>
-      {children}
+    <div className={`min-h-screen ${className}`}>
+      {isVisible ? children : null}
     </div>
   );
 };

@@ -101,22 +101,15 @@ const Skills = () => {
       {/* Animated Grid */}
       <div className="absolute inset-0">
         {[...Array(15)].map((_, i) => (
-          <motion.div
+          <div
             key={i}
             className="absolute h-px bg-gradient-to-r from-transparent via-purple-500/20 to-transparent"
             style={{
               top: `${i * 7}%`,
               left: '0%',
               right: '0%',
-            }}
-            animate={{
-              opacity: [0, 1, 0],
-              scaleX: [0, 1, 0],
-            }}
-            transition={{
-              duration: 4,
-              repeat: Infinity,
-              delay: i * 0.2,
+              animation: 'grid-line-pulse 4s ease-in-out infinite',
+              animationDelay: `${i * 0.2}s`,
             }}
           />
         ))}

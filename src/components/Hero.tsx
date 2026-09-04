@@ -4,6 +4,7 @@ import { useRef, useEffect, useState, useCallback, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Download, Github, Linkedin, Mail, ArrowDown, Sparkles, Zap, Target } from 'lucide-react';
 import dynamic from 'next/dynamic';
+import Image from 'next/image';
 
 // Dynamically import heavy 3D components with better loading
 const ThreeScene = dynamic(() => import('./ThreeScene'), {
@@ -13,58 +14,50 @@ const ThreeScene = dynamic(() => import('./ThreeScene'), {
   ),
 });
 
-const Hero = () => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [isVisible, setIsVisible] = useState(false);
+// Isolated 3D background component: defers Three.js to browser idle time
+// and encapsulates state so Hero's LCP elements never re-render.
+const Hero3DScene = () => {
   const [is3DLoaded, setIs3DLoaded] = useState(false);
 
-  // Optimized intersection observer
   useEffect(() => {
-    // Check if IntersectionObserver is supported
-    if (typeof window === 'undefined' || !('IntersectionObserver' in window)) {
-      console.warn('IntersectionObserver not supported in Hero. Falling back.');
-      setIsVisible(true);
-      setTimeout(() => setIs3DLoaded(true), 200);
-      return;
-    }
+    let idleHandle: number | null = null;
+    let timerHandle: NodeJS.Timeout | null = null;
 
-    let observer: globalThis.IntersectionObserver | null = null;
+    const triggerLoad = () => {
+      setIs3DLoaded(true);
+    };
 
-    try {
-      observer = new globalThis.IntersectionObserver(
-        ([entry]) => {
-          if (entry.isIntersecting) {
-            setIsVisible(true);
-            // Load 3D scene with delay for better performance
-            setTimeout(() => setIs3DLoaded(true), 200);
-          }
-        },
-        { threshold: 0.1, rootMargin: '50px' }
-      );
-
-      if (containerRef.current) {
-        observer.observe(containerRef.current);
-      }
-    } catch (error) {
-      console.warn('IntersectionObserver failed in Hero:', error);
-      // Fallback: show content immediately
-      setIsVisible(true);
-      setTimeout(() => setIs3DLoaded(true), 200);
+    if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
+      idleHandle = (window as unknown as { requestIdleCallback: (cb: () => void, opts?: { timeout: number }) => number })
+        .requestIdleCallback(triggerLoad, { timeout: 2500 });
+    } else {
+      timerHandle = setTimeout(triggerLoad, 1500);
     }
 
     return () => {
-      if (observer) {
-        try {
-          if (containerRef.current) {
-            observer.unobserve(containerRef.current);
-          }
-          observer.disconnect();
-        } catch (error) {
-          console.warn('Error disconnecting observer in Hero:', error);
-        }
+      if (idleHandle !== null && typeof window !== 'undefined' && 'cancelIdleCallback' in window) {
+        (window as unknown as { cancelIdleCallback: (id: number) => void }).cancelIdleCallback(idleHandle);
+      }
+      if (timerHandle !== null) {
+        clearTimeout(timerHandle);
       }
     };
   }, []);
+
+  return (
+    <div className="absolute inset-0 z-0">
+      {is3DLoaded ? (
+        <ThreeScene />
+      ) : (
+        <div className="w-full h-full bg-gradient-to-br from-cyan-900/20 to-purple-900/20 animate-pulse" />
+      )}
+    </div>
+  );
+};
+
+const Hero = () => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [isVisible] = useState(true);
 
   const scrollToAbout = useCallback(() => {
     document.getElementById('about')?.scrollIntoView({ 
@@ -162,19 +155,25 @@ const Hero = () => {
     );
   }, [isVisible]);
 
-  // Further reduced floating elements
+  // Deterministic floating elements (hydration-safe, avoids Math.random during SSR)
   const floatingElements = useMemo(() => {
     if (!isVisible) return null;
     
+    const particles = [
+      { left: '20%', top: '35%', duration: 3.2, delay: 0.1 },
+      { left: '80%', top: '50%', duration: 3.8, delay: 0.3 },
+      { left: '48%', top: '78%', duration: 2.8, delay: 0.2 },
+    ];
+
     return (
       <>
-        {[...Array(3)].map((_, i) => (
+        {particles.map((particle, i) => (
           <motion.div
             key={i}
             className="absolute w-1 h-1 bg-cyan-400 rounded-full"
             style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
+              left: particle.left,
+              top: particle.top,
             }}
             initial={{ opacity: 0, y: 0, scale: 1 }}
             animate={{
@@ -183,9 +182,9 @@ const Hero = () => {
               scale: [1, 1.1, 1],
             }}
             transition={{
-              duration: 2.5 + Math.random() * 1.5,
+              duration: particle.duration,
               repeat: Infinity,
-              delay: Math.random() * 0.5,
+              delay: particle.delay,
             }}
           />
         ))}
@@ -203,16 +202,8 @@ const Hero = () => {
       {/* Optimized Grid Lines */}
       {gridLines}
 
-      {/* 3D Background Scene - Only when visible and loaded */}
-      {isVisible && (
-        <div className="absolute inset-0 z-0">
-          {is3DLoaded ? (
-            <ThreeScene />
-          ) : (
-            <div className="w-full h-full bg-gradient-to-br from-cyan-900/20 to-purple-900/20 animate-pulse" />
-          )}
-        </div>
-      )}
+      {/* 3D Background Scene - Isolated render boundary */}
+      <Hero3DScene />
 
       {/* Content */}
       <div className="container-custom relative z-10">
@@ -252,13 +243,7 @@ const Hero = () => {
 
           {/* Optimized Main Title + Image */}
 {/* Professional Main Title + Image Section */}
-<motion.div
-  initial={{ opacity: 0, y: 40 }}
-  whileInView={{ opacity: 1, y: 0 }}
-  transition={{ duration: 0.6, type: "spring", stiffness: 100 }}
-  viewport={{ once: true }}
-  className="flex flex-col lg:flex-row items-center justify-between gap-10 lg:gap-16 mb-8 lg:mb-12"
->
+<div className="flex flex-col lg:flex-row items-center justify-between gap-10 lg:gap-16 mb-8 lg:mb-12">
   {/* Left Side - Title */}
   <div className="flex-1 text-center lg:text-left">
     <motion.div
@@ -286,19 +271,17 @@ const Hero = () => {
   </div>
 
   {/* Right Side - Professional Image */}
-  <motion.div
-    initial={{ opacity: 0, scale: 0.85, rotate: -8 }}
-    whileInView={{ opacity: 1, scale: 1, rotate: 0 }}
-    transition={{ duration: 0.7, delay: 0.3 }}
-    viewport={{ once: true }}
-    className="flex-shrink-0 relative group"
-  >
+  <div className="flex-shrink-0 relative group">
     <div className="relative">
       {/* Main Image */}
       <div className="relative z-10 overflow-hidden rounded-3xl shadow-2xl">
-        <img
-          src="/hero.png"
+        <Image
+          src="/hero.webp"
           alt="Mohammad Apon - Professional Frontend Developer"
+          width={960}
+          height={1088}
+          priority
+          sizes="(max-width: 640px) 280px, (max-width: 768px) 320px, (max-width: 1024px) 360px, 400px"
           className="w-[280px] h-[280px] sm:w-[320px] sm:h-[320px] md:w-[360px] md:h-[360px] lg:w-[400px] lg:h-[400px] object-cover transition-all duration-500 group-hover:scale-105"
         />
         
@@ -317,8 +300,8 @@ const Hero = () => {
     <div className="absolute -top-12 -right-4 lg:block hidden bg-black/80 backdrop-blur-md text-xs font-mono px-4 py-2 rounded-2xl border border-cyan-400/30 shadow-xl">
       <span className="text-emerald-400">●</span> Available for work
     </div>
-  </motion.div>
-</motion.div>
+  </div>
+</div>
 
           {/* Optimized Description */}
           <motion.p

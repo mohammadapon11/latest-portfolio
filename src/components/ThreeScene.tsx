@@ -8,32 +8,43 @@ import { Suspense, useState, useEffect, useRef } from 'react';
 // Performance-optimized 3D scene
 const ThreeScene = () => {
   const [isHighPerformance, setIsHighPerformance] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
-  const [isIntersectionSupported, setIsIntersectionSupported] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Detect device performance and IntersectionObserver support
+  // Detect device performance, screen size, and IntersectionObserver support
   useEffect(() => {
-    // Check if IntersectionObserver is supported
-    setIsIntersectionSupported('IntersectionObserver' in window);
+    const checkDevice = () => {
+      if (typeof window === 'undefined') return;
 
-    const checkPerformance = () => {
-      const memory = (performance as Performance & { memory: { usedJSHeapSize: number; totalJSHeapSize: number; jsHeapSizeLimit: number } }).memory;
-      const isHighEnd = memory && memory.usedJSHeapSize < 50 * 1024 * 1024; // Less than 50MB
-      const isHighFPS = navigator.hardwareConcurrency && navigator.hardwareConcurrency > 4;
-      setIsHighPerformance(Boolean(isHighEnd && isHighFPS));
+      // Viewport-based mobile check (<768px)
+      const mobile = window.innerWidth < 768;
+      setIsMobile(mobile);
+
+      // Multi-signal device capability check (not relying solely on hardwareConcurrency)
+      const memory = (performance as Performance & { memory?: { usedJSHeapSize: number } }).memory;
+      const isMemoryFine = !memory || memory.usedJSHeapSize < 80 * 1024 * 1024;
+      const cores = navigator.hardwareConcurrency || 4;
+      const hasGoodCores = cores >= 4;
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      setIsHighPerformance(Boolean(hasGoodCores && isMemoryFine && !prefersReducedMotion));
     };
 
-    checkPerformance();
+    checkDevice();
+    window.addEventListener('resize', checkDevice, { passive: true });
     
     // If IntersectionObserver is not supported, show content immediately
     if (!('IntersectionObserver' in window)) {
       setIsVisible(true);
-      return;
+      return () => {
+        window.removeEventListener('resize', checkDevice);
+      };
     }
 
     // Recheck on visibility change
     let observer: IntersectionObserver | null = null;
+    const container = containerRef.current;
 
     try {
       observer = new IntersectionObserver(
@@ -43,8 +54,8 @@ const ThreeScene = () => {
         { threshold: 0.1 }
       );
 
-      if (containerRef.current) {
-        observer.observe(containerRef.current);
+      if (container) {
+        observer.observe(container);
       }
     } catch (error) {
       console.warn('IntersectionObserver failed in ThreeScene:', error);
@@ -53,11 +64,10 @@ const ThreeScene = () => {
     }
 
     return () => {
-      if (observer) {
+      window.removeEventListener('resize', checkDevice);
+      if (observer && container) {
         try {
-          if (containerRef.current) {
-            observer.unobserve(containerRef.current);
-          }
+          observer.unobserve(container);
           observer.disconnect();
         } catch (error) {
           console.warn('Error disconnecting observer in ThreeScene:', error);
@@ -69,9 +79,14 @@ const ThreeScene = () => {
   // Don't render if not visible
   if (!isVisible) {
     return (
-      <div className="w-full h-full bg-gradient-to-br from-cyan-900/20 to-purple-900/20" />
+      <div ref={containerRef} className="w-full h-full bg-gradient-to-br from-cyan-900/20 to-purple-900/20" />
     );
   }
+
+  // Mobile (<768px) is capped at 1.25 DPR; Desktop/tablet preserves [1, 2] or [0.75, 1.5]
+  const effectiveDpr: [number, number] = isMobile
+    ? (isHighPerformance ? [1, 1.25] : [0.75, 1.25])
+    : (isHighPerformance ? [1, 2] : [0.75, 1.5]);
 
   return (
     <div ref={containerRef} className="w-full h-full">
@@ -87,7 +102,7 @@ const ThreeScene = () => {
           preserveDrawingBuffer: false,
           failIfMajorPerformanceCaveat: false
         }}
-        dpr={isHighPerformance ? [1, 2] : [0.75, 1.5]} // Lower DPR on low-end devices
+        dpr={effectiveDpr}
         performance={{ min: isHighPerformance ? 0.5 : 0.3 }} // Lower threshold on low-end
         frameloop="demand" // Only render when needed
         onCreated={({ gl }) => {
@@ -147,8 +162,8 @@ const ThreeScene = () => {
             color="#6366f1"
           />
 
-          {/* Conditional effects based on performance */}
-          {isHighPerformance && (
+          {/* Postprocessing: disabled on mobile (<768px); active on desktop/tablet when performance permits */}
+          {!isMobile && isHighPerformance && (
             <EffectComposer>
               <Bloom luminanceThreshold={0.2} intensity={0.3} />
               <ChromaticAberration offset={[0.001, 0.001]} />

@@ -1,5 +1,12 @@
 import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
 import './globals.css';
+
+const inter = Inter({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-inter',
+});
 
 export const metadata: Metadata = {
   title: 'Mohammad Apon - Frontend Developer',
@@ -77,29 +84,8 @@ export default function RootLayout({
         <link rel="apple-touch-icon" href="/logo.png" />
         <link rel="shortcut icon" href="/logo.ico" />
         <link rel="manifest" href="/manifest.json" />
-        
-        {/* Preload critical resources */}
-        <link
-          rel="preload"
-          href="/fonts/inter-var.woff2"
-          as="font"
-          type="font/woff2"
-          crossOrigin="anonymous"
-        />
-        
-        {/* DNS prefetch for external resources */}
-        <link rel="dns-prefetch" href="//fonts.googleapis.com" />
-        <link rel="dns-prefetch" href="//fonts.gstatic.com" />
-        
-        {/* Preconnect to external domains */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        
-        {/* Resource hints */}
-        <link rel="preload" href="/globe.svg" as="image" />
-        <link rel="preload" href="/file.svg" as="image" />
       </head>
-      <body className="antialiased bg-black text-white overflow-x-hidden">
+      <body className={`${inter.className} ${inter.variable} antialiased bg-black text-white overflow-x-hidden`}>
         {children}
       </body>
     </html>

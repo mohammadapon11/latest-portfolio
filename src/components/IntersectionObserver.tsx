@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 interface IntersectionObserverProps {
   children: React.ReactNode;
@@ -9,93 +9,83 @@ interface IntersectionObserverProps {
   onIntersect?: (isIntersecting: boolean) => void;
   className?: string;
   delay?: number;
+  id?: string;
 }
 
 const IntersectionObserver = ({
   children,
   threshold = [0, 0.1, 0.5, 1],
-  rootMargin = '0px 0px -100px 0px',
+  rootMargin = '100px',
   onIntersect,
   className = '',
-  delay = 0
+  delay = 0,
+  id,
 }: IntersectionObserverProps) => {
-  const [isIntersecting, setIsIntersecting] = useState(false);
-  const [isVisible, setIsVisible] = useState(false);
-  const [isSupported, setIsSupported] = useState(false);
+  const [hasIntersected, setHasIntersected] = useState(false);
   const elementRef = useRef<HTMLDivElement>(null);
 
-  // Check if IntersectionObserver is supported
   useEffect(() => {
-    setIsSupported('IntersectionObserver' in window);
-  }, []);
+    if (hasIntersected) return;
 
-  const handleIntersection = useCallback((entries: IntersectionObserverEntry[]) => {
-    const [entry] = entries;
-    const intersecting = entry.isIntersecting;
-
-    setIsIntersecting(intersecting);
-
-    if (intersecting && !isVisible) {
-      setTimeout(() => {
-        setIsVisible(true);
-        onIntersect?.(true);
-      }, delay);
-    } else if (!intersecting && isVisible) {
-      setIsVisible(false);
-      onIntersect?.(false);
-    }
-  }, [isVisible, onIntersect, delay]);
-
-  useEffect(() => {
-    // If IntersectionObserver is not supported, show content immediately
-    if (!isSupported) {
-      setIsVisible(true);
+    if (typeof window === 'undefined' || !('IntersectionObserver' in window)) {
+      setHasIntersected(true);
       onIntersect?.(true);
       return;
     }
 
-    let observer: globalThis.IntersectionObserver | null = null;
+    const element = elementRef.current;
+    if (!element) return;
 
-    try {
-      observer = new globalThis.IntersectionObserver(handleIntersection, {
-        threshold,
-        rootMargin,
-      });
+    let timeoutId: NodeJS.Timeout | null = null;
 
-      if (elementRef.current) {
-        observer.observe(elementRef.current);
-      }
-    } catch (error) {
-      console.warn('IntersectionObserver failed:', error);
-      // Fallback: show content immediately
-      setIsVisible(true);
-      onIntersect?.(true);
-    }
+    const observer = new window.IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          if (delay > 0) {
+            timeoutId = setTimeout(() => {
+              setHasIntersected(true);
+              onIntersect?.(true);
+            }, delay);
+          } else {
+            setHasIntersected(true);
+            onIntersect?.(true);
+          }
+          observer.unobserve(element);
+          observer.disconnect();
+        }
+      },
+      { threshold, rootMargin }
+    );
+
+    observer.observe(element);
 
     return () => {
-      if (observer) {
-        try {
-          if (elementRef.current) {
-            observer.unobserve(elementRef.current);
-          }
-          observer.disconnect();
-        } catch (error) {
-          console.warn('Error disconnecting observer:', error);
-        }
-      }
+      if (timeoutId) clearTimeout(timeoutId);
+      observer.disconnect();
     };
-  }, [handleIntersection, threshold, rootMargin, isSupported, onIntersect]);
+  }, [threshold, rootMargin, onIntersect, delay, hasIntersected]);
 
-  // If IntersectionObserver is not supported, render children immediately
-  if (!isSupported) {
-    return <div className={className}>{children}</div>;
+  // Extract target section ID from children if not explicitly provided
+  let targetId: string | undefined = id;
+  if (!targetId && React.isValidElement(children)) {
+    const inner = (children.props as { children?: React.ReactNode })?.children;
+    if (inner && React.isValidElement(inner) && (inner.props as { id?: string })?.id) {
+      targetId = (inner.props as { id?: string }).id;
+    } else if ((children.props as { id?: string })?.id) {
+      targetId = (children.props as { id?: string }).id;
+    }
   }
 
   return (
-    <div ref={elementRef} className={className}>
-      {children}
+    <div
+      ref={elementRef}
+      id={!hasIntersected ? targetId : undefined}
+      className={`min-h-screen ${className}`}
+    >
+      {hasIntersected ? children : null}
     </div>
   );
 };
 
 export default IntersectionObserver;
+
