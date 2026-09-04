@@ -2,7 +2,22 @@
 
 import { motion } from 'framer-motion';
 import { Code, Globe, Smartphone, Database, Zap, Shield, Rocket, Brain, Cpu, Atom } from 'lucide-react';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
+
+const aboutParticles = [
+  { left: '10%', top: '20%', duration: '7s', delay: '0s' },
+  { left: '25%', top: '65%', duration: '9s', delay: '1.5s' },
+  { left: '40%', top: '15%', duration: '8s', delay: '0.8s' },
+  { left: '55%', top: '80%', duration: '10s', delay: '2.2s' },
+  { left: '70%', top: '30%', duration: '7.5s', delay: '1s' },
+  { left: '85%', top: '70%', duration: '9.5s', delay: '3s' },
+  { left: '15%', top: '85%', duration: '8.5s', delay: '2s' },
+  { left: '35%', top: '45%', duration: '7s', delay: '0.5s' },
+  { left: '60%', top: '50%', duration: '9s', delay: '1.8s' },
+  { left: '80%', top: '10%', duration: '8s', delay: '2.5s' },
+  { left: '92%', top: '40%', duration: '10s', delay: '0.2s' },
+  { left: '48%', top: '90%', duration: '8s', delay: '3.5s' },
+];
 
 const About = () => {
   const features = [
@@ -51,122 +66,68 @@ const About = () => {
     });
   }, []);
 
+  const particlesElement = useMemo(() => (
+    <div className="absolute inset-0 pointer-events-none">
+      {aboutParticles.map((p, i) => (
+        <div
+          key={i}
+          className="absolute w-1 h-1 bg-cyan-400 rounded-full about-particle"
+          style={{
+            left: p.left,
+            top: p.top,
+            animation: `about-particle-float ${p.duration} ease-in-out infinite`,
+            animationDelay: p.delay,
+          }}
+        />
+      ))}
+    </div>
+  ), []);
+
   return (
     <section className="section-padding bg-black relative overflow-hidden">
       {/* Futuristic Background */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(120,119,198,0.1),transparent_50%)]"></div>
       <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_30%,rgba(0,255,255,0.03)_50%,transparent_70%)]"></div>
       
-      {/* Floating Particles */}
-      <div className="absolute inset-0 pointer-events-none">
-        {[...Array(20)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute w-1 h-1 bg-cyan-400 rounded-full"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-            }}
-            animate={{
-              y: [0, -100, 0],
-              opacity: [0, 1, 0],
-              scale: [0, 1, 0],
-            }}
-            transition={{
-              duration: 8 + Math.random() * 4,
-              repeat: Infinity,
-              delay: Math.random() * 5,
-            }}
-          />
-        ))}
-      </div>
+      {/* Lightweight CSS Floating Particles */}
+      {particlesElement}
 
       <div className="container-custom relative z-10">
         <motion.div
-          initial={{ 
-            clipPath: "polygon(0% 0%, 0% 0%, 0% 100%, 0% 100%)",
-            filter: "blur(10px)",
-            transform: "perspective(1000px) rotateX(90deg) translateZ(-100px)"
-          }}
-          whileInView={{ 
-            clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
-            filter: "blur(0px)",
-            transform: "perspective(1000px) rotateX(0deg) translateZ(0px)"
-          }}
-          transition={{ 
-            duration: 1.2, 
-            ease: [0.25, 0.46, 0.45, 0.94],
-            filter: { duration: 0.8 },
-            transform: { duration: 1.2 }
-          }}
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
           viewport={{ once: true }}
           className="text-center md:mb-20 mb-12"
         >
           <div className="flex items-center justify-center gap-3 mb-6">
             <motion.div
-              initial={{ scale: 0, rotate: -180 }}
+              initial={{ scale: 0, rotate: -90 }}
               whileInView={{ scale: 1, rotate: 0 }}
-              transition={{ 
-                duration: 0.8, 
-                type: "spring", 
-                stiffness: 200,
-                delay: 0.3
-              }}
+              transition={{ duration: 0.4, type: "spring", stiffness: 200, delay: 0.1 }}
               viewport={{ once: true }}
-              whileHover={{ 
-                scale: 1.2, 
-                rotate: 360,
-                filter: "hue-rotate(180deg)"
-              }}
+              whileHover={{ scale: 1.15, rotate: 15 }}
             >
               <Rocket className="text-cyan-400" size={32} />
             </motion.div>
-            <motion.h2 
-              className="text-4xl md:text-5xl lg:text-6xl font-black text-white"
-              initial={{ 
-                backgroundPosition: "200% center",
-                backgroundSize: "200% 100%"
-              }}
-              transition={{ duration: 1.5, ease: "easeInOut" }}
-            >
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-white">
               About <span className="gradient-text">Me</span>
-            </motion.h2>
+            </h2>
             <motion.div
-              initial={{ scale: 0, rotate: 180 }}
+              initial={{ scale: 0, rotate: 90 }}
               whileInView={{ scale: 1, rotate: 0 }}
-              transition={{ 
-                duration: 0.8, 
-                type: "spring", 
-                stiffness: 200,
-                delay: 0.5
-              }}
+              transition={{ duration: 0.4, type: "spring", stiffness: 200, delay: 0.15 }}
               viewport={{ once: true }}
-              whileHover={{ 
-                scale: 1.2, 
-                rotate: -360,
-                filter: "hue-rotate(-180deg)"
-              }}
+              whileHover={{ scale: 1.15, rotate: -15 }}
             >
               <Rocket className="text-cyan-400" size={32} />
             </motion.div>
           </div>
           <motion.p 
             className="text-xl text-gray-300 max-w-4xl mx-auto leading-relaxed font-light"
-            initial={{ 
-              opacity: 0,
-              transform: "translateY(30px) skewY(-2deg)",
-              filter: "blur(5px)"
-            }}
-            whileInView={{ 
-              opacity: 1,
-              transform: "translateY(0px) skewY(0deg)",
-              filter: "blur(0px)"
-            }}
-            transition={{ 
-              duration: 1,
-              delay: 0.7,
-              ease: [0.25, 0.46, 0.45, 0.94]
-            }}
+            initial={{ opacity: 0, y: 15 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2, ease: "easeOut" }}
             viewport={{ once: true }}
           >
             I&apos;m a <span className="text-cyan-400 font-medium">passionate Frontend Developer</span> with 3+ years of experience crafting 
@@ -180,155 +141,41 @@ const About = () => {
           {features.map((feature, index) => (
             <motion.div
               key={feature.title}
-              initial={{ 
-                clipPath: "polygon(50% 0%, 50% 0%, 50% 100%, 50% 100%)",
-                transform: "perspective(1000px) rotateY(90deg) translateZ(-100px)",
-                filter: "blur(8px) saturate(0.5)"
-              }}
-              whileInView={{ 
-                clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
-                transform: "perspective(1000px) rotateY(0deg) translateZ(0px)",
-                filter: "blur(0px) saturate(1)"
-              }}
-              transition={{ 
-                duration: 1.2, 
-                delay: index * 0.15,
-                ease: [0.25, 0.46, 0.45, 0.94],
-                clipPath: { duration: 0.8 },
-                transform: { duration: 1.2 }
-              }}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: index * 0.08, ease: "easeOut" }}
               viewport={{ once: true }}
-              whileHover={{ 
-                scale: 1.05,
-                transform: "perspective(1000px) rotateY(-5deg) translateZ(20px)",
-                filter: "brightness(1.1) contrast(1.1)"
-              }}
-              className="group relative p-8 bg-gradient-to-br from-slate-900/50 to-slate-800/50 rounded-3xl shadow-2xl hover:shadow-cyan-500/25 transition-all duration-500 border border-slate-700/50 hover:border-cyan-500/50 backdrop-blur-xl overflow-hidden"
+              whileHover={{ scale: 1.03, y: -4 }}
+              className="group relative p-8 bg-gradient-to-br from-slate-900/50 to-slate-800/50 rounded-3xl shadow-2xl hover:shadow-cyan-500/25 transition-all duration-300 border border-slate-700/50 hover:border-cyan-500/50 backdrop-blur-xl overflow-hidden"
             >
-              {/* Advanced Holographic Background */}
-              <motion.div 
-                className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 to-purple-500/5"
-                initial={{ opacity: 0, scale: 0.8 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                whileHover={{ 
-                  opacity: 0.8, 
-                  scale: 1.1,
-                  filter: "hue-rotate(45deg)"
-                }}
-                transition={{ duration: 0.6, delay: index * 0.15 + 0.3 }}
-                viewport={{ once: true }}
-              />
+              {/* Holographic Background */}
+              <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               
-              {/* Advanced Icon Container */}
-              <motion.div 
-                className={`relative w-16 h-16 bg-gradient-to-br ${feature.color} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500 shadow-lg`}
-                initial={{ 
-                  scale: 0,
-                  rotate: 180,
-                  filter: "hue-rotate(180deg) saturate(0)"
-                }}
-                whileInView={{ 
-                  scale: 1,
-                  rotate: 0,
-                  filter: "hue-rotate(0deg) saturate(1)"
-                }}
-                whileHover={{ 
-                  rotate: 360, 
-                  scale: 1.3,
-                  filter: "hue-rotate(90deg) brightness(1.2)",
-                  boxShadow: "0 0 30px rgba(6, 182, 212, 0.5)"
-                }}
-                transition={{ 
-                  duration: 0.8, 
-                  delay: index * 0.15 + 0.4,
-                  ease: [0.25, 0.46, 0.45, 0.94]
-                }}
-                viewport={{ once: true }}
-              >
+              {/* Icon Container */}
+              <div className={`relative w-16 h-16 bg-gradient-to-br ${feature.color} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg`}>
                 <feature.icon size={32} className="text-white" />
-                <motion.div 
-                  className="absolute inset-0 bg-white/20 rounded-2xl blur-xl"
-                  initial={{ opacity: 0, scale: 0.5 }}
-                  whileInView={{ opacity: 0, scale: 1 }}
-                  whileHover={{ opacity: 1, scale: 1.2 }}
-                  transition={{ duration: 0.6 }}
-                  viewport={{ once: true }}
-                />
-              </motion.div>
+                <div className="absolute inset-0 bg-white/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              </div>
               
-              <motion.h3 
-                className="text-2xl font-bold text-white mb-4 group-hover:text-cyan-400 transition-colors duration-300"
-                initial={{ 
-                  opacity: 0,
-                  transform: "translateX(-20px) skewX(-5deg)"
-                }}
-                whileInView={{ 
-                  opacity: 1,
-                  transform: "translateX(0px) skewX(0deg)"
-                }}
-                transition={{ 
-                  duration: 0.6, 
-                  delay: index * 0.15 + 0.5,
-                  ease: [0.25, 0.46, 0.45, 0.94]
-                }}
-                viewport={{ once: true }}
-              >
+              <h3 className="text-2xl font-bold text-white mb-4 group-hover:text-cyan-400 transition-colors duration-300">
                 {feature.title}
-              </motion.h3>
+              </h3>
               
-              <motion.p 
-                className="text-gray-300 leading-relaxed font-light"
-                initial={{ 
-                  opacity: 0,
-                  transform: "translateY(20px) scale(0.9)"
-                }}
-                whileInView={{ 
-                  opacity: 1,
-                  transform: "translateY(0px) scale(1)"
-                }}
-                transition={{ 
-                  duration: 0.6, 
-                  delay: index * 0.15 + 0.6,
-                  ease: [0.25, 0.46, 0.45, 0.94]
-                }}
-                viewport={{ once: true }}
-              >
+              <p className="text-gray-300 leading-relaxed font-light">
                 {feature.description}
-              </motion.p>
+              </p>
               
-              {/* Advanced Hover Effect Border */}
-              <motion.div 
-                className="absolute inset-0 rounded-3xl border border-transparent bg-gradient-to-r from-cyan-500/0 via-cyan-500/50 to-cyan-500/0"
-                initial={{ opacity: 0, scale: 0.8 }}
-                whileHover={{ 
-                  opacity: 1, 
-                  scale: 1.1,
-                  filter: "hue-rotate(45deg)"
-                }}
-                transition={{ duration: 0.5 }}
-              />
+              {/* Hover Effect Border */}
+              <div className="absolute inset-0 rounded-3xl border border-transparent bg-gradient-to-r from-cyan-500/0 via-cyan-500/30 to-cyan-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
             </motion.div>
           ))}
         </div>
 
         {/* Futuristic Stats */}
         <motion.div
-          initial={{ 
-            clipPath: "polygon(0% 50%, 0% 50%, 100% 50%, 100% 50%)",
-            transform: "perspective(1000px) rotateX(-90deg) translateZ(-100px)",
-            filter: "blur(10px) saturate(0.3)"
-          }}
-          whileInView={{ 
-            clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
-            transform: "perspective(1000px) rotateX(0deg) translateZ(0px)",
-            filter: "blur(0px) saturate(1)"
-          }}
-          transition={{ 
-            duration: 1.5, 
-            ease: [0.25, 0.46, 0.45, 0.94],
-            clipPath: { duration: 1 },
-            transform: { duration: 1.5 }
-          }}
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
           viewport={{ once: true }}
           className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-20"
         >
@@ -340,343 +187,68 @@ const About = () => {
           ].map((stat, index) => (
             <motion.div
               key={stat.label}
-              initial={{ 
-                scale: 0,
-                rotate: 180,
-                filter: "hue-rotate(180deg) saturate(0) blur(5px)",
-                transform: "perspective(1000px) rotateZ(180deg) translateZ(-50px)"
-              }}
-              whileInView={{ 
-                scale: 1,
-                rotate: 0,
-                filter: "hue-rotate(0deg) saturate(1) blur(0px)",
-                transform: "perspective(1000px) rotateZ(0deg) translateZ(0px)"
-              }}
-              transition={{ 
-                duration: 1, 
-                delay: index * 0.2,
-                ease: [0.25, 0.46, 0.45, 0.94],
-                filter: { duration: 0.8 },
-                transform: { duration: 1 }
-              }}
+              initial={{ opacity: 0, scale: 0.9, y: 15 }}
+              whileInView={{ opacity: 1, scale: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: index * 0.08, ease: "easeOut" }}
               viewport={{ once: true }}
-              whileHover={{ 
-                scale: 1.1,
-                rotate: 5,
-                filter: "hue-rotate(45deg) brightness(1.2)",
-                transform: "perspective(1000px) rotateZ(5deg) translateZ(20px)"
-              }}
-              className="text-center group"
+              whileHover={{ scale: 1.05, y: -4 }}
+              className="text-center group cursor-default"
             >
-              <motion.div 
-                className={`w-20 h-20 bg-gradient-to-br ${stat.color} rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg`}
-                initial={{ 
-                  scale: 0,
-                  rotate: -180,
-                  filter: "hue-rotate(-180deg) saturate(0)"
-                }}
-                whileInView={{ 
-                  scale: 1,
-                  rotate: 0,
-                  filter: "hue-rotate(0deg) saturate(1)"
-                }}
-                whileHover={{ 
-                  rotate: 360, 
-                  scale: 1.3,
-                  filter: "hue-rotate(90deg) brightness(1.3)",
-                  boxShadow: "0 0 40px rgba(6, 182, 212, 0.6)"
-                }}
-                transition={{ 
-                  duration: 1, 
-                  delay: index * 0.2 + 0.3,
-                  ease: [0.25, 0.46, 0.45, 0.94]
-                }}
-                viewport={{ once: true }}
-              >
-                <motion.span 
-                  className="text-3xl"
-                  initial={{ scale: 0, rotate: 180 }}
-                  whileInView={{ scale: 1, rotate: 0 }}
-                  whileHover={{ 
-                    scale: 1.2,
-                    rotate: 360,
-                    filter: "hue-rotate(180deg)"
-                  }}
-                  transition={{ 
-                    duration: 0.8, 
-                    delay: index * 0.2 + 0.5,
-                    ease: [0.25, 0.46, 0.45, 0.94]
-                  }}
-                  viewport={{ once: true }}
-                >
-                  {stat.icon}
-                </motion.span>
-              </motion.div>
+              <div className={`w-20 h-20 bg-gradient-to-br ${stat.color} rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg`}>
+                <span className="text-3xl">{stat.icon}</span>
+              </div>
               
-              <motion.div 
-                className="text-4xl md:text-5xl font-black gradient-text mb-2"
-                initial={{ 
-                  opacity: 0,
-                  transform: "translateY(20px) scale(0.5)",
-                  filter: "blur(5px)"
-                }}
-                whileInView={{ 
-                  opacity: 1,
-                  transform: "translateY(0px) scale(1)",
-                  filter: "blur(0px)"
-                }}
-                whileHover={{ 
-                  scale: 1.1,
-                  filter: "brightness(1.2) contrast(1.1)"
-                }}
-                transition={{ 
-                  duration: 0.8, 
-                  delay: index * 0.2 + 0.6,
-                  ease: [0.25, 0.46, 0.45, 0.94]
-                }}
-                viewport={{ once: true }}
-              >
+              <div className="text-4xl md:text-5xl font-black gradient-text mb-2">
                 {stat.number}
-              </motion.div>
+              </div>
               
-              <motion.div 
-                className="text-sm md:text-base text-gray-300 font-medium"
-                initial={{ 
-                  opacity: 0,
-                  transform: "translateY(15px) skewY(-2deg)",
-                  filter: "blur(3px)"
-                }}
-                whileInView={{ 
-                  opacity: 1,
-                  transform: "translateY(0px) skewY(0deg)",
-                  filter: "blur(0px)"
-                }}
-                whileHover={{ 
-                  scale: 1.05,
-                  skewY: 1,
-                  filter: "brightness(1.1)"
-                }}
-                transition={{ 
-                  duration: 0.8, 
-                  delay: index * 0.2 + 0.7,
-                  ease: [0.25, 0.46, 0.45, 0.94]
-                }}
-                viewport={{ once: true }}
-              >
+              <div className="text-sm md:text-base text-gray-300 font-medium">
                 {stat.label}
-              </motion.div>
+              </div>
             </motion.div>
           ))}
         </motion.div>
 
-        {/* Futuristic CTA */}
-        <motion.div
-          initial={{ 
-            clipPath: "polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)",
-            transform: "perspective(1000px) rotateY(-90deg) translateZ(-100px)",
-            filter: "blur(15px) saturate(0.2) hue-rotate(180deg)"
-          }}
-          whileInView={{ 
-            clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
-            transform: "perspective(1000px) rotateY(0deg) translateZ(0px)",
-            filter: "blur(0px) saturate(1) hue-rotate(0deg)"
-          }}
-          transition={{ 
-            duration: 1.8, 
-            ease: [0.25, 0.46, 0.45, 0.94],
-            clipPath: { duration: 1.2 },
-            transform: { duration: 1.8 },
-            filter: { duration: 1.5 }
-          }}
-          viewport={{ once: true }}
-          className="relative p-12 bg-gradient-to-r from-cyan-900/20 to-purple-900/20 rounded-3xl border border-cyan-500/30 backdrop-blur-xl overflow-hidden"
+        {/* Simplified Lightweight 2D CTA Card */}
+        <div
+          className="relative p-10 md:p-12 bg-gradient-to-r from-cyan-900/20 to-purple-900/20 rounded-3xl border border-cyan-500/30 hover:border-cyan-400/50 backdrop-blur-xl overflow-hidden transition-all duration-300 ease-out hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-2xl hover:shadow-cyan-500/20 motion-reduce:transform-none motion-reduce:transition-none"
         >
-          {/* Advanced Animated Background */}
-          <motion.div 
-            className="absolute inset-0 bg-gradient-to-r from-cyan-500/5 to-purple-500/5"
-            animate={{ 
-              scale: [1, 1.1, 1],
-              opacity: [0.3, 0.6, 0.3],
-              filter: ["hue-rotate(0deg)", "hue-rotate(180deg)", "hue-rotate(360deg)"]
-            }}
-            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-          />
-          <motion.div 
-            className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(0,255,255,0.1),transparent_70%)]"
-            animate={{ 
-              scale: [1, 1.2, 1],
-              opacity: [0.5, 0.8, 0.5],
-              filter: ["hue-rotate(0deg)", "hue-rotate(-180deg)", "hue-rotate(-360deg)"]
-            }}
-            transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-          />
+          {/* Lightweight Animated Background */}
+          <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/5 to-purple-500/5 animate-pulse pointer-events-none" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(0,255,255,0.08),transparent_70%)] animate-pulse pointer-events-none" style={{ animationDelay: '1s' }} />
           
           <div className="relative text-center">
             <div className="flex items-center justify-center gap-3 mb-6">
-              <motion.div
-                initial={{ 
-                  scale: 0,
-                  rotate: -180,
-                  filter: "hue-rotate(180deg) saturate(0)"
-                }}
-                whileInView={{ 
-                  scale: 1,
-                  rotate: 0,
-                  filter: "hue-rotate(0deg) saturate(1)"
-                }}
-                whileHover={{ 
-                  scale: 1.3,
-                  rotate: 360,
-                  filter: "hue-rotate(90deg) brightness(1.5)"
-                }}
-                viewport={{ once: true }}
-                transition={{ 
-                  duration: 1, 
-                  delay: 0.5,
-                  ease: [0.25, 0.46, 0.45, 0.94]
-                }}
-              >
-                <Brain className="text-cyan-400" size={32} />
-              </motion.div>
-              
-              <motion.h3 
-                className="text-3xl font-black text-white"
-                initial={{ 
-                  opacity: 0,
-                  transform: "translateY(30px) scale(0.8)",
-                  filter: "blur(10px) saturate(0)"
-                }}
-                whileInView={{ 
-                  opacity: 1,
-                  transform: "translateY(0px) scale(1)",
-                  filter: "blur(0px) saturate(1)"
-                }}
-                whileHover={{ 
-                  scale: 1.05,
-                  filter: "brightness(1.2) contrast(1.1)"
-                }}
-                transition={{ 
-                  duration: 1.2, 
-                  delay: 0.8,
-                  ease: [0.25, 0.46, 0.45, 0.94]
-                }}
-                viewport={{ once: true }}
-              >
+              <Brain className="text-cyan-400" size={32} />
+              <h3 className="text-3xl font-black text-white">
                 Ready to Build Something <span className="gradient-text">Amazing</span>?
-              </motion.h3>
-              
-              <motion.div
-                initial={{ 
-                  scale: 0,
-                  rotate: 180,
-                  filter: "hue-rotate(-180deg) saturate(0)"
-                }}
-                whileInView={{ 
-                  scale: 1,
-                  rotate: 0,
-                  filter: "hue-rotate(0deg) saturate(1)"
-                }}
-                whileHover={{ 
-                  scale: 1.3,
-                  rotate: -360,
-                  filter: "hue-rotate(-90deg) brightness(1.5)"
-                }}
-                viewport={{ once: true }}
-                transition={{ 
-                  duration: 1, 
-                  delay: 1,
-                  ease: [0.25, 0.46, 0.45, 0.94]
-                }}
-              >
-                <Cpu className="text-purple-400" size={32} />
-              </motion.div>
+              </h3>
+              <Cpu className="text-purple-400" size={32} />
             </div>
             
-            <motion.p 
-              className="text-gray-300 mb-8 max-w-3xl mx-auto text-lg font-light"
-              initial={{ 
-                opacity: 0,
-                transform: "translateY(25px) skewY(-1deg)",
-                filter: "blur(5px) saturate(0.5)"
-              }}
-              whileInView={{ 
-                opacity: 1,
-                transform: "translateY(0px) skewY(0deg)",
-                filter: "blur(0px) saturate(1)"
-              }}
-              whileHover={{ 
-                scale: 1.02,
-                skewY: 0.5,
-                filter: "brightness(1.1)"
-              }}
-              transition={{ 
-                duration: 1,
-                delay: 1.2,
-                ease: [0.25, 0.46, 0.45, 0.94]
-              }}
-              viewport={{ once: true }}
-            >
+            <p className="text-gray-300 mb-8 max-w-3xl mx-auto text-lg font-light">
               I&apos;m always excited to work on new projects and collaborate with amazing teams. 
               Let&apos;s discuss how we can bring your ideas to life with <span className="text-cyan-400 font-medium">cutting-edge technology</span>.
-            </motion.p>
+            </p>
             
-            <motion.button
+            <button
               onClick={scrollToAbout}
-              initial={{ 
-                scale: 0.8,
-                rotate: -5,
-                filter: "blur(3px) saturate(0.7)"
-              }}
-              whileInView={{ 
-                scale: 1,
-                rotate: 0,
-                filter: "blur(0px) saturate(1)"
-              }}
-              whileHover={{ 
-                scale: 1.08, 
-                y: -8, 
-                rotate: 2,
-                filter: "brightness(1.2) contrast(1.1)",
-                boxShadow: "0 20px 40px rgba(6, 182, 212, 0.4)"
-              }}
-              whileTap={{ scale: 0.95 }}
-              transition={{ 
-                duration: 0.8,
-                delay: 1.5,
-                ease: [0.25, 0.46, 0.45, 0.94]
-              }}
-              viewport={{ once: true }}
-              className="group relative px-10 py-4 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 text-white font-bold rounded-2xl shadow-2xl hover:shadow-cyan-500/25 transition-all duration-300 overflow-hidden"
+              className="group relative px-10 py-4 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 text-white font-bold rounded-2xl shadow-2xl hover:shadow-cyan-500/25 transition-all duration-200 ease-out hover:scale-105 hover:-translate-y-0.5 active:scale-95 overflow-hidden motion-reduce:transform-none"
             >
-              <motion.div 
-                className="absolute inset-0 bg-gradient-to-r from-cyan-600 via-purple-600 to-pink-600"
-                initial={{ opacity: 0 }}
-                whileHover={{ opacity: 1 }}
-                transition={{ duration: 0.3 }}
-              />
+              <div className="absolute inset-0 bg-gradient-to-r from-cyan-600 via-purple-600 to-pink-600 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
               <span className="relative flex items-center gap-3">
-                <motion.div
-                  initial={{ rotate: 0 }}
-                  whileHover={{ rotate: 360 }}
-                  animate={{ 
-                    rotate: [0, 360],
-                    filter: ["hue-rotate(0deg)", "hue-rotate(180deg)", "hue-rotate(360deg)"]
-                  }}
-                  transition={{ 
-                    duration: 3, 
-                    repeat: Infinity, 
-                    ease: "linear",
-                    delay: 3
-                  }}
+                <span
+                  className="inline-flex transition-transform duration-300"
+                  style={{ animation: 'spin-clockwise 8s linear infinite' }}
                 >
                   <Atom size={24} />
-                </motion.div>
+                </span>
                 Let&apos;s Talk
                 <Zap size={24} className="text-yellow-300" />
               </span>
-            </motion.button>
+            </button>
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

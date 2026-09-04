@@ -2,6 +2,20 @@
 
 import { motion } from 'framer-motion';
 import { Calendar, MapPin, Building, Award, Users, TrendingUp, Rocket, Brain, Cpu, Atom, Sparkles, Target } from 'lucide-react';
+import { useMemo } from 'react';
+
+const experienceParticles = [
+  { left: '12%', top: '18%', duration: '6s', delay: '0s' },
+  { left: '28%', top: '72%', duration: '7.5s', delay: '1.2s' },
+  { left: '45%', top: '35%', duration: '6.8s', delay: '0.5s' },
+  { left: '62%', top: '85%', duration: '8s', delay: '2s' },
+  { left: '78%', top: '22%', duration: '7s', delay: '1.5s' },
+  { left: '88%', top: '65%', duration: '8.5s', delay: '0.8s' },
+  { left: '20%', top: '50%', duration: '6.5s', delay: '2.5s' },
+  { left: '52%', top: '15%', duration: '7.2s', delay: '1s' },
+  { left: '70%', top: '58%', duration: '6.2s', delay: '1.8s' },
+  { left: '38%', top: '90%', duration: '7.8s', delay: '0.3s' },
+];
 
 const Experience = () => {
   const experiences = [
@@ -68,41 +82,37 @@ const Experience = () => {
     }
   ];
 
+  const particlesElement = useMemo(() => (
+    <div className="absolute inset-0 pointer-events-none">
+      {experienceParticles.map((p, i) => (
+        <div
+          key={i}
+          className="absolute w-2 h-2 bg-orange-400 rounded-full experience-particle"
+          style={{
+            left: p.left,
+            top: p.top,
+            animation: `experience-particle-float ${p.duration} ease-in-out infinite`,
+            animationDelay: p.delay,
+          }}
+        />
+      ))}
+    </div>
+  ), []);
+
   return (
     <section className="section-padding bg-black relative overflow-hidden">
       {/* Futuristic Background */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,165,0,0.1),transparent_50%)]"></div>
       <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_30%,rgba(255,165,0,0.03)_50%,transparent_70%)]"></div>
       
-      {/* Floating Elements */}
-      <div className="absolute inset-0 pointer-events-none">
-        {[...Array(15)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute w-2 h-2 bg-orange-400 rounded-full"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-            }}
-            animate={{
-              y: [0, -80, 0],
-              opacity: [0.3, 1, 0.3],
-              scale: [0.5, 1.5, 0.5],
-            }}
-            transition={{
-              duration: 6 + Math.random() * 3,
-              repeat: Infinity,
-              delay: Math.random() * 4,
-            }}
-          />
-        ))}
-      </div>
+      {/* Lightweight CSS Floating Elements */}
+      {particlesElement}
 
       <div className="container-custom relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0 }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
           viewport={{ once: true }}
           className="text-center md:mb-20 mb-12"
         >
@@ -133,9 +143,9 @@ const Experience = () => {
             {experiences.map((exp, index) => (
               <motion.div
                 key={`${exp.company}-${exp.position}`}
-                initial={{ opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
+                initial={{ opacity: 0, x: index % 2 === 0 ? -30 : 30 }}
                 whileInView={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.8, delay: index * 0.2 }}
+                transition={{ duration: 0.5, delay: index * 0.1, ease: "easeOut" }}
                 viewport={{ once: true }}
                 className={`flex flex-col lg:flex-row gap-10 ${
                   index % 2 === 0 ? 'lg:flex-row' : 'lg:flex-row-reverse'
@@ -143,14 +153,14 @@ const Experience = () => {
               >
                 {/* Content */}
                 <div className="flex-1">
-                  <div className="group relative bg-gradient-to-br from-slate-900/50 to-slate-800/50 rounded-3xl p-8 shadow-2xl hover:shadow-orange-500/25 transition-all duration-500 border border-slate-700/50 hover:border-orange-500/50 backdrop-blur-xl overflow-hidden">
+                  <div className="group relative bg-gradient-to-br from-slate-900/50 to-slate-800/50 rounded-3xl p-8 shadow-2xl hover:shadow-orange-500/25 transition-all duration-300 border border-slate-700/50 hover:border-orange-500/50 backdrop-blur-xl overflow-hidden">
                     {/* Holographic Background */}
-                    <div className={`absolute inset-0 bg-gradient-to-br ${exp.color} opacity-0 group-hover:opacity-5 transition-opacity duration-500`} />
+                    <div className={`absolute inset-0 bg-gradient-to-br ${exp.color} opacity-0 group-hover:opacity-5 transition-opacity duration-300`} />
                     
                     <div className="flex items-start gap-6 mb-6">
-                      <div className={`relative w-20 h-20 bg-gradient-to-br ${exp.color} rounded-2xl flex items-center justify-center text-4xl group-hover:scale-110 transition-transform duration-500 shadow-lg`}>
+                      <div className={`relative w-20 h-20 bg-gradient-to-br ${exp.color} rounded-2xl flex items-center justify-center text-4xl group-hover:scale-110 transition-transform duration-300 shadow-lg`}>
                         {exp.logo}
-                        <div className="absolute inset-0 bg-white/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                        <div className="absolute inset-0 bg-white/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                       </div>
                       <div className="flex-1">
                         <h4 className="text-2xl font-bold text-white mb-3 group-hover:text-orange-400 transition-colors duration-300">
@@ -207,7 +217,7 @@ const Experience = () => {
                     </div>
                     
                     {/* Hover Effect Border */}
-                    <div className={`absolute inset-0 rounded-3xl border border-transparent bg-gradient-to-r ${exp.color} opacity-0 group-hover:opacity-20 transition-opacity duration-500`} />
+                    <div className={`absolute inset-0 rounded-3xl border border-transparent bg-gradient-to-r ${exp.color} opacity-0 group-hover:opacity-20 transition-opacity duration-300 pointer-events-none`} />
                   </div>
                 </div>
 
@@ -239,17 +249,18 @@ const Experience = () => {
                 key={`${edu.institution}-${edu.course}`}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: index * 0.1 }}
+                transition={{ duration: 0.5, delay: index * 0.08, ease: "easeOut" }}
                 viewport={{ once: true }}
-                className="group relative bg-gradient-to-br from-slate-900/50 to-slate-800/50 rounded-3xl p-8 shadow-2xl hover:shadow-orange-500/25 transition-all duration-500 border border-slate-700/50 hover:border-orange-500/50 backdrop-blur-xl overflow-hidden"
+                whileHover={{ scale: 1.03, y: -4 }}
+                className="group relative bg-gradient-to-br from-slate-900/50 to-slate-800/50 rounded-3xl p-8 shadow-2xl hover:shadow-orange-500/25 transition-all duration-300 border border-slate-700/50 hover:border-orange-500/50 backdrop-blur-xl overflow-hidden"
               >
                 {/* Holographic Background */}
-                <div className={`absolute inset-0 bg-gradient-to-br ${edu.color} opacity-0 group-hover:opacity-5 transition-opacity duration-500`} />
+                <div className={`absolute inset-0 bg-gradient-to-br ${edu.color} opacity-0 group-hover:opacity-5 transition-opacity duration-300`} />
                 
                 <div className="text-center relative">
-                  <div className={`w-20 h-20 bg-gradient-to-br ${edu.color} rounded-2xl flex items-center justify-center mx-auto mb-6 text-4xl group-hover:scale-110 transition-transform duration-500 shadow-lg`}>
+                  <div className={`w-20 h-20 bg-gradient-to-br ${edu.color} rounded-2xl flex items-center justify-center mx-auto mb-6 text-4xl group-hover:scale-110 transition-transform duration-300 shadow-lg`}>
                     {edu.logo}
-                    <div className="absolute inset-0 bg-white/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                    <div className="absolute inset-0 bg-white/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   </div>
                   <h4 className="text-xl font-bold text-white mb-3 group-hover:text-orange-400 transition-colors duration-300">
                     {edu.course}
@@ -266,7 +277,7 @@ const Experience = () => {
                 </div>
                 
                 {/* Hover Effect Border */}
-                <div className={`absolute inset-0 rounded-3xl border border-transparent bg-gradient-to-r ${edu.color} opacity-0 group-hover:opacity-20 transition-opacity duration-500`} />
+                <div className={`absolute inset-0 rounded-3xl border border-transparent bg-gradient-to-r ${edu.color} opacity-0 group-hover:opacity-20 transition-opacity duration-300 pointer-events-none`} />
               </motion.div>
             ))}
           </div>
@@ -276,7 +287,7 @@ const Experience = () => {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0 }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
           viewport={{ once: true }}
           className="relative p-12 bg-gradient-to-r from-orange-900/20 to-red-900/20 rounded-3xl border border-orange-500/30 backdrop-blur-xl overflow-hidden"
         >
@@ -320,11 +331,12 @@ const Experience = () => {
               ].map((highlight, index) => (
                 <motion.div
                   key={highlight.title}
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.8, delay: index * 0.1 }}
+                  initial={{ opacity: 0, scale: 0.95, y: 15 }}
+                  whileInView={{ opacity: 1, scale: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: index * 0.08, ease: "easeOut" }}
                   viewport={{ once: true }}
-                  className="text-center group"
+                  whileHover={{ scale: 1.05, y: -4 }}
+                  className="text-center group cursor-default"
                 >
                   <div className={`w-20 h-20 bg-gradient-to-br ${highlight.color} rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg`}>
                     <highlight.icon size={40} className="text-white" />

@@ -271,6 +271,28 @@ body {
   }
 }
 
+@keyframes about-particle-float {
+  0%, 100% {
+    transform: translateY(0px) scale(0.4);
+    opacity: 0.2;
+  }
+  50% {
+    transform: translateY(-70px) scale(1.2);
+    opacity: 0.9;
+  }
+}
+
+@keyframes experience-particle-float {
+  0%, 100% {
+    transform: translateY(0px) scale(0.5);
+    opacity: 0.25;
+  }
+  50% {
+    transform: translateY(-60px) scale(1.4);
+    opacity: 0.85;
+  }
+}
+
 @keyframes spin-clockwise {
   from {
     transform: rotate(0deg);
@@ -314,6 +336,11 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .group:focus-within .input-glow {
     animation: none;
+  }
+  .about-particle,
+  .experience-particle {
+    animation: none !important;
+    opacity: 0.3 !important;
   }
 }
 
